@@ -14,24 +14,24 @@ async function checkAuth() {
             if (navLogin) navLogin.style.display = 'none';
             if (navLogout) navLogout.style.display = 'inline';
 
-            // Name as clickable profile link
+            // Name as clickable profile link -> EXTENSION APPLIED (.html)
             if (navUser) {
-                navUser.innerHTML = '<a href="/profile" style="color:white; margin-left:20px;">👤 '
+                navUser.innerHTML = '<a href="/profile.html" style="color:white; margin-left:20px;">👤 '
                     + data.user.name + '</a>';
             }
 
             // Hide become a volunteer
             if (volunteerLink) volunteerLink.innerHTML = '';
 
-            // Show correct dashboard links
+            // Show correct dashboard links -> EXACT FILE PATHS FIXED WITH EXTENSIONS
             if (dashboardLink) {
                 if (data.user.role === 'admin') {
                     dashboardLink.innerHTML =
-                        '<a href="/volunteer">Volunteer Panel</a>' +
-                        '<a href="/admin" style="margin-left:20px;">Admin Panel</a>';
+                        '<a href="/volunteer-dashboard.html">Volunteer Panel</a>' +
+                        '<a href="/admin-dashboard.html" style="margin-left:20px;">Admin Panel</a>';
                 } else if (data.user.role === 'volunteer') {
                     dashboardLink.innerHTML =
-                        '<a href="/volunteer">Volunteer Panel</a>';
+                        '<a href="/volunteer-dashboard.html">Volunteer Panel</a>';
                 } else {
                     dashboardLink.innerHTML = '';
                 }
@@ -43,10 +43,10 @@ async function checkAuth() {
             if (navLogout) navLogout.style.display = 'none';
             if (navUser) navUser.innerHTML = '';
 
-            // Show become a volunteer
+            // Show become a volunteer -> EXTENSION APPLIED (.html)
             if (volunteerLink) {
                 volunteerLink.innerHTML =
-                    '<a href="/volunteer-apply">Become a Volunteer</a>';
+                    '<a href="/volunteer-apply.html">Become a Volunteer</a>';
             }
 
             if (dashboardLink) dashboardLink.innerHTML = '';
@@ -59,7 +59,7 @@ async function checkAuth() {
 
 async function logout() {
     await fetch('/api/auth/logout', { method: 'POST' });
-    window.location.href = '/';
+    window.location.href = '/index.html'; // Redirect to main page explicitly
 }
 
 checkAuth();
