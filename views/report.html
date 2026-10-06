@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Report Stray | Animal Rescue</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+    <nav class="navbar">
+    <div class="nav-brand"><a href="/">🐾 Animal Rescue</a></div>
+    <div class="nav-links">
+        <a href="/">Home</a>
+        <a href="/animals">Browse Animals</a>
+        <a href="/report">Report Stray</a>
+        <span id="volunteer-link"></span>
+        <span id="dashboard-link"></span>
+        <a href="/login" id="nav-login">Login</a>
+        <span id="nav-user"></span>
+        <a href="#" id="nav-logout" style="display:none" onclick="logout()">Logout</a>
+    </div>
+</nav>
+
+    <div class="page-header">
+        <h1>📍 Report a Stray Animal</h1>
+        <p>Help us rescue animals in need — no login required</p>
+    </div>
+
+    <div class="auth-container">
+        <div class="auth-card" style="max-width:600px;">
+            <h2>Submit a Report</h2>
+            <p class="auth-subtitle">Please provide your contact info and animal details</p>
+
+            <div id="message" class="message" style="display:none"></div>
+
+            <form id="report-form">
+
+                <h3 style="color:#2c7a4b; margin-bottom:15px; margin-top:10px;">
+                    👤 Your Information
+                </h3>
+
+                <div class="form-group">
+                    <label>Your Name *</label>
+                    <input type="text" id="reporterName" placeholder="Your full name" required>
+                </div>
+                <div class="form-group">
+                    <label>Phone Number *</label>
+                    <input type="text" id="reporterPhone" placeholder="Your phone number" required>
+                </div>
+                <div class="form-group">
+                    <label>Your Address *</label>
+                    <input type="text" id="reporterAddress" placeholder="Your address" required>
+                </div>
+
+                <h3 style="color:#2c7a4b; margin-bottom:15px; margin-top:25px;">
+                    🐾 Animal Information
+                </h3>
+
+                <div class="form-group">
+                    <label>Species</label>
+                    <select id="species">
+                        <option value="">Select species</option>
+                        <option value="dog">Dog</option>
+                        <option value="cat">Cat</option>
+                        <option value="bird">Bird</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Location Found *</label>
+                    <input type="text" id="location"
+                        placeholder="Street, area, landmark..." required>
+                </div>
+                <div class="form-group">
+                    <label>Description *</label>
+                    <textarea id="description" rows="4"
+                        placeholder="Describe the animal's condition, color, size, injuries..."
+                        required style="resize:vertical;"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Upload Photo <span style="color:#777;">(Recommended)</span></label>
+                    <input type="file" id="image" accept="image/*">
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-full">
+                    Submit Report
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>🐾 Animal Rescue & Adoption Portal</p>
+    </footer>
+
+    <script src="/js/main.js"></script>
+    <script>
+        document.getElementById('report-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const msgDiv = document.getElementById('message');
+
+            const formData = new FormData();
+            formData.append('reporterName', document.getElementById('reporterName').value);
+            formData.append('reporterPhone', document.getElementById('reporterPhone').value);
+            formData.append('reporterAddress', document.getElementById('reporterAddress').value);
+            formData.append('species', document.getElementById('species').value);
+            formData.append('location', document.getElementById('location').value);
+            formData.append('description', document.getElementById('description').value);
+            const imageFile = document.getElementById('image').files[0];
+            if (imageFile) formData.append('image', imageFile);
+
+            try {
+                const res = await fetch('/api/reports', {
+                    method: 'POST',
+                    body: formData
+                });
+                const result = await res.json();
+
+                if (res.ok) {
+                    msgDiv.className = 'message success';
+                    msgDiv.textContent = '✅ Report submitted! Thank you for helping.';
+                    msgDiv.style.display = 'block';
+                    document.getElementById('report-form').reset();
+                    window.scrollTo(0, 0);
+                } else {
+                    msgDiv.className = 'message error';
+                    msgDiv.textContent = '❌ ' + result.message;
+                    msgDiv.style.display = 'block';
+                }
+            } catch (err) {
+                msgDiv.className = 'message error';
+                msgDiv.textContent = '❌ Something went wrong.';
+                msgDiv.style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>

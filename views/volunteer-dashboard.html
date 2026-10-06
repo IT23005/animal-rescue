@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Volunteer Dashboard | Animal Rescue</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+    <nav class="navbar">
+    <div class="nav-brand"><a href="/">🐾 Animal Rescue</a></div>
+    <div class="nav-links">
+        <a href="/">Home</a>
+        <a href="/animals">Browse Animals</a>
+        <a href="/report">Report Stray</a>
+        <!-- <a href="/volunteer">Volunteer Panel</a> -->
+        <span id="admin-link"></span>
+        <span id="volunteer-link"></span>
+        <span id="dashboard-link"></span>
+        <a href="/login" id="nav-login" style="display:none">Login</a>
+        <span id="nav-user"></span>
+        <a href="#" id="nav-logout" style="display:none" onclick="logout()">Logout</a>
+    </div>
+</nav>
+
+    <div class="page-header">
+        <h1>🤝 Volunteer Dashboard</h1>
+        <p>Manage animals and adoption applications</p>
+    </div>
+
+    <div class="dashboard">
+
+        <!-- STATS -->
+        <div class="dashboard-stats">
+            <div class="dash-stat">
+                <h3 id="stat-pending-apps">0</h3>
+                <p>Pending Applications</p>
+            </div>
+            <div class="dash-stat">
+                <h3 id="stat-animals">0</h3>
+                <p>Total Animals</p>
+            </div>
+            <div class="dash-stat">
+                <h3 id="stat-adopted">0</h3>
+                <p>Adopted</p>
+            </div>
+        </div>
+
+        <!-- TABS -->
+        <div class="tab-bar">
+            <button class="tab-btn active" onclick="showTab('applications')">📋 Applications</button>
+            <button class="tab-btn" onclick="showTab('add-animal')">➕ Add Animal</button>
+            <button class="tab-btn" onclick="showTab('medical')">💉 Medical Logs</button>
+        </div>
+
+        <!-- APPLICATIONS TAB -->
+        <div id="tab-applications" class="tab-content">
+            <div class="table-container">
+                <h3>Pending Adoption Applications</h3>
+                <div style="overflow-x:auto;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Applicant</th>
+                                <th>Animal</th>
+                                <th>Type</th>
+                                <th>Reason</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="applications-table">
+                            <tr><td colspan="7" style="text-align:center; padding:20px;">Loading...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ADD ANIMAL TAB -->
+        <div id="tab-add-animal" class="tab-content" style="display:none;">
+            <div class="table-container">
+                <h3>➕ Add New Animal</h3>
+                <div style="padding:25px;">
+                    <div id="add-message" class="message" style="display:none;"></div>
+                    <form id="add-animal-form" enctype="multipart/form-data">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Animal Name</label>
+                                <input type="text" id="a-name" placeholder="e.g. Max" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Species</label>
+                                <select id="a-species" required>
+                                    <option value="">Select</option>
+                                    <option value="dog">Dog</option>
+                                    <option value="cat">Cat</option>
+                                    <option value="bird">Bird</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Age</label>
+                                <input type="text" id="a-age" placeholder="e.g. 2 years">
+                            </div>
+                            <div class="form-group">
+                                <label>Gender</label>
+                                <select id="a-gender">
+                                    <option value="male">Male</option>
+                                    <option value="female">Female</option>
+                                    <option value="unknown">Unknown</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Health Status</label>
+                            <select id="a-health">
+                                <option value="healthy">Healthy</option>
+                                <option value="needs treatment">Needs Treatment</option>
+                                <option value="critical">Critical</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Description</label>
+                            <textarea id="a-description" rows="3"
+                                placeholder="Describe the animal..." style="resize:vertical;"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Photo</label>
+                            <input type="file" id="a-image" accept="image/*">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Add Animal</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- MEDICAL LOGS TAB -->
+        <div id="tab-medical" class="tab-content" style="display:none;">
+            <div class="table-container">
+                <h3>💉 Add Medical Log</h3>
+                <div style="padding:25px;">
+                    <div id="med-message" class="message" style="display:none;"></div>
+                    <div class="form-group">
+                        <label>Select Animal</label>
+                        <select id="med-animal">
+                            <option value="">Loading animals...</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Medical Note</label>
+                        <textarea id="med-note" rows="4"
+                            placeholder="Vaccination, treatment, checkup details..."
+                            style="resize:vertical;"></textarea>
+                    </div>
+                    <button class="btn btn-primary" onclick="addMedicalLog()">Add Log</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- REVIEW MODAL -->
+    <div id="review-modal" class="modal" style="display:none;">
+        <button class="modal-close" onclick="closeReviewModal()">✕</button>
+        <h2>Review Application</h2>
+        <input type="hidden" id="review-app-id">
+        <div id="review-details" style="margin:15px 0; color:#555;"></div>
+        <div class="form-group">
+            <label>Review Note (Optional)</label>
+            <textarea id="review-note" rows="3" style="width:100%; padding:10px; border:2px solid #e0e0e0; border-radius:8px;"></textarea>
+        </div>
+        <div style="display:flex; gap:10px; margin-top:15px;">
+            <button class="btn btn-primary" onclick="submitReview('approved')">✅ Approve</button>
+            <button class="btn btn-danger" onclick="submitReview('rejected')">❌ Reject</button>
+        </div>
+    </div>
+    <div id="review-overlay" class="modal-overlay" style="display:none;" onclick="closeReviewModal()"></div>
+
+    <footer class="footer">
+        <p>🐾 Animal Rescue & Adoption Portal</p>
+    </footer>
+
+    <script src="/js/main.js"></script>
+    <script>
+
+        
+async function checkAccess() {
+    const res = await fetch('/api/auth/me');
+    const data = await res.json();
+
+    if (!data.loggedIn) {
+        window.location.href = '/login';
+        return;
+    }
+
+    if (data.user.role !== 'volunteer' && data.user.role !== 'admin') {
+        window.location.href = '/';
+        return;
+    }
+
+    // Show admin panel link if admin
+    if (data.user.role === 'admin') {
+        const adminLink = document.getElementById('admin-link');
+        if (adminLink) {
+            adminLink.innerHTML = '<a href="/admin">Admin Panel</a>';
+        }
+    }
+
+    loadDashboard();
+}
+
+        async function loadDashboard() {
+            await loadApplications();
+            await loadAnimalDropdown();
+            await loadStats();
+        }
+
+        async function loadStats() {
+            const res = await fetch('/api/animals/stats');
+            const data = await res.json();
+            document.getElementById('stat-animals').textContent = (data.available || 0) + (data.adopted || 0);
+            document.getElementById('stat-adopted').textContent = data.adopted || 0;
+
+            const appsRes = await fetch('/api/applications');
+            const apps = await appsRes.json();
+            const pending = apps.filter(a => a.status === 'pending').length;
+            document.getElementById('stat-pending-apps').textContent = pending;
+        }
+
+        async function loadApplications() {
+            const res = await fetch('/api/applications');
+            const apps = await res.json();
+            const tbody = document.getElementById('applications-table');
+
+            if (apps.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:20px;">No applications yet.</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = apps.map(app => `
+                <tr>
+                    <td><strong>${app.applicant?.name || 'N/A'}</strong><br>
+                        <small>${app.applicant?.email || ''}</small></td>
+                    <td>${app.animal?.name || 'N/A'}<br>
+                        <small>${app.animal?.species || ''}</small></td>
+                    <td><span class="badge badge-available">${app.type}</span></td>
+                    <td style="max-width:150px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;"
+                        title="${app.reason}">${app.reason}</td>
+                    <td>${new Date(app.createdAt).toLocaleDateString()}</td>
+                    <td><span class="badge ${app.status === 'pending' ? 'badge-pending' : app.status === 'approved' ? 'badge-available' : 'badge-critical'}">
+                        ${app.status}</span></td>
+                    <td>
+                        ${app.status === 'pending' ?
+                            `<button class="btn btn-primary" style="padding:6px 12px; font-size:13px;"
+                                onclick="openReview('${app._id}', '${app.applicant?.name}', '${app.animal?.name}', '${app.type}', '${app.reason}')">
+                                Review</button>` :
+                            '<span style="color:#777; font-size:13px;">Done</span>'
+                        }
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        async function loadAnimalDropdown() {
+            const res = await fetch('/api/animals?status=available');
+            const animals = await res.json();
+            const select = document.getElementById('med-animal');
+            select.innerHTML = animals.map(a =>
+                `<option value="${a._id}">${a.name} (${a.species})</option>`
+            ).join('');
+        }
+
+        function showTab(tab) {
+            document.querySelectorAll('.tab-content').forEach(t => t.style.display = 'none');
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('tab-' + tab).style.display = 'block';
+            event.target.classList.add('active');
+        }
+
+        function openReview(id, applicantName, animalName, type, reason) {
+            document.getElementById('review-app-id').value = id;
+            document.getElementById('review-details').innerHTML = `
+                <p><strong>Applicant:</strong> ${applicantName}</p>
+                <p><strong>Animal:</strong> ${animalName}</p>
+                <p><strong>Type:</strong> ${type}</p>
+                <p><strong>Reason:</strong> ${reason}</p>
+            `;
+            document.getElementById('review-modal').style.display = 'flex';
+            document.getElementById('review-overlay').style.display = 'block';
+        }
+
+        function closeReviewModal() {
+            document.getElementById('review-modal').style.display = 'none';
+            document.getElementById('review-overlay').style.display = 'none';
+        }
+
+        async function submitReview(status) {
+            const id = document.getElementById('review-app-id').value;
+            const reviewNote = document.getElementById('review-note').value;
+
+            const res = await fetch(`/api/applications/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ status, reviewNote })
+            });
+
+            if (res.ok) {
+                closeReviewModal();
+                loadDashboard();
+            }
+        }
+
+        document.getElementById('add-animal-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const msgDiv = document.getElementById('add-message');
+
+            const formData = new FormData();
+            formData.append('name', document.getElementById('a-name').value);
+            formData.append('species', document.getElementById('a-species').value);
+            formData.append('age', document.getElementById('a-age').value);
+            formData.append('gender', document.getElementById('a-gender').value);
+            formData.append('healthStatus', document.getElementById('a-health').value);
+            formData.append('description', document.getElementById('a-description').value);
+            const img = document.getElementById('a-image').files[0];
+            if (img) formData.append('image', img);
+
+            const res = await fetch('/api/animals', {
+                method: 'POST',
+                body: formData
+            });
+            const result = await res.json();
+
+            if (res.ok) {
+                msgDiv.className = 'message success';
+                msgDiv.textContent = '✅ Animal added successfully!';
+                msgDiv.style.display = 'block';
+                document.getElementById('add-animal-form').reset();
+                loadAnimalDropdown();
+                loadStats();
+            } else {
+                msgDiv.className = 'message error';
+                msgDiv.textContent = '❌ ' + result.message;
+                msgDiv.style.display = 'block';
+            }
+        });
+
+        async function addMedicalLog() {
+            const animalId = document.getElementById('med-animal').value;
+            const note = document.getElementById('med-note').value;
+            const msgDiv = document.getElementById('med-message');
+
+            if (!note.trim()) {
+                msgDiv.className = 'message error';
+                msgDiv.textContent = '❌ Please enter a medical note.';
+                msgDiv.style.display = 'block';
+                return;
+            }
+
+            const res = await fetch(`/api/animals/${animalId}/medical`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ note })
+            });
+
+            if (res.ok) {
+                msgDiv.className = 'message success';
+                msgDiv.textContent = '✅ Medical log added!';
+                msgDiv.style.display = 'block';
+                document.getElementById('med-note').value = '';
+            } else {
+                msgDiv.className = 'message error';
+                msgDiv.textContent = '❌ Failed to add log.';
+                msgDiv.style.display = 'block';
+            }
+        }
+
+        checkAccess();
+    </script>
+</body>
+</html>

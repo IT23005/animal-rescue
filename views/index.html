@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animal Rescue & Adoption Portal</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+   <nav class="navbar">
+    <div class="nav-brand">🐾 Animal Rescue</div>
+    <div class="nav-links">
+        <a href="/">Home</a>
+        <a href="/animals">Browse Animals</a>
+        <a href="/report">Report Stray</a>
+        <span id="volunteer-link"></span>
+        <span id="dashboard-link"></span>
+        <a href="/login" id="nav-login">Login</a>
+        <span id="nav-user"></span>
+        <a href="#" id="nav-logout" style="display:none" onclick="logout()">Logout</a>
+    </div>
+</nav>
+
+    <!-- HERO -->
+    <section class="hero">
+        <div class="hero-buttons">
+            <a href="/animals" class="btn btn-primary">Browse Animals</a>
+            <a href="/report" class="btn btn-secondary">Report a Stray</a>
+            <a href="/volunteer-apply" class="btn btn-secondary">Become a Volunteer</a>
+        </div>
+    </section>
+
+    <!-- FEATURES -->
+    <section class="features">
+        <div class="container">
+            <h2>How It Works</h2>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🔍</div>
+                    <h3>Browse & Search</h3>
+                    <p>Filter animals by species, age, and health status to find your perfect match.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📋</div>
+                    <h3>Apply to Adopt</h3>
+                    <p>Submit an adoption or fostering application through our simple form.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📍</div>
+                    <h3>Report Strays</h3>
+                    <p>Spotted a stray? Report it with a photo and location to get help fast.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">❤️</div>
+                    <h3>Save Lives</h3>
+                    <p>Every adoption gives an animal a loving home and a new beginning.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- STATS -->
+    <section class="stats">
+        <div class="container">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h2 id="stat-animals">0</h2>
+                    <p>Animals Available</p>
+                </div>
+                <div class="stat-card">
+                    <h2 id="stat-adopted">0</h2>
+                    <p>Successfully Adopted</p>
+                </div>
+                <div class="stat-card">
+                    <h2 id="stat-reports">0</h2>
+                    <p>Strays Reported</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <p>🐾 Animal Rescue & Adoption Portal | Helping animals find homes</p>
+    </footer>
+
+    <script src="/js/main.js"></script>
+    <script>
+        // Load stats
+        async function loadStats() {
+            try {
+                const res = await fetch('/api/animals/stats');
+                const data = await res.json();
+                document.getElementById('stat-animals').textContent = data.available || 0;
+                document.getElementById('stat-adopted').textContent = data.adopted || 0;
+                document.getElementById('stat-reports').textContent = data.reports || 0;
+            } catch (err) {
+                console.log('Stats not loaded yet');
+            }
+        }
+        loadStats();
+    </script>
+</body>
+</html>
