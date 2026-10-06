@@ -95,30 +95,44 @@
             renderAnimals(animals);
         }
 
-        function renderAnimals(animals) {
-            const container = document.getElementById('animals-container');
-            if (animals.length === 0) {
-                container.innerHTML = '<p style="text-align:center; padding:40px; grid-column:1/-1;">No animals found.</p>';
-                return;
-            }
+       function renderAnimals(animals) {
+    const container = document.getElementById('animals-container');
+    if (!container) return; // প্রিভেন্ট নাল রেফারেন্স এরর
 
-            container.innerHTML = animals.map(a => `
-                <div class="card" onclick="openModal('${a._id}')">
-                    <img src="${a.image || '/images/default-animal.png'}" 
-                         alt="${a.name}"
-                         onerror="this.src='https://via.placeholder.com/300x200?text=No+Image'">
-                    <div class="card-body">
-                        <h3>${a.name}</h3>
-                        <p>🐾 ${a.species.charAt(0).toUpperCase() + a.species.slice(1)} | ${a.gender || 'Unknown'}</p>
-                        <p>📅 Age: ${a.age}</p>
-                        <p>❤️ Health: ${a.healthStatus}</p>
-                        <span class="badge badge-${a.status === 'available' ? 'available' : a.status === 'pending' ? 'pending' : 'adopted'}">
-                            ${a.status.charAt(0).toUpperCase() + a.status.slice(1)}
-                        </span>
-                    </div>
+    if (animals.length === 0) {
+        container.innerHTML = '<p style="text-align:center; padding:40px; grid-column:1/-1;">No animals found.</p>';
+        return;
+    }
+
+    container.innerHTML = animals.map(a => {
+        // ডাটাবেজের ফিল্ড আর্কিটেকচার অনুযায়ী ভেরিয়েবল রিসেট (imageUrl এবং adoptionStatus)
+        const petImage = a.imageUrl || '/images/default-animal.png';
+        const petStatus = a.adoptionStatus || 'Available';
+        
+        // সেফটি স্ট্রিং ফরম্যাটিং
+        const displaySpecies = a.species ? (a.species.charAt(0).toUpperCase() + a.species.slice(1)) : 'Unknown';
+        const displayStatus = petStatus.charAt(0).toUpperCase() + petStatus.slice(1);
+        const lowerStatus = petStatus.toLowerCase();
+
+        return `
+            <div class="card" onclick="openModal('${a._id}')">
+                <img src="${petImage}" 
+                     alt="${a.name || 'Animal'}"
+                     onerror="this.onerror=null; this.src='https://via.placeholder.com/300x200?text=No+Image'">
+                <div class="card-body">
+                    <h3>${a.name || 'Unnamed'}</h3>
+                    <p>🐾 ${displaySpecies} | ${a.gender || 'Unknown'}</p>
+                    <p>📅 Age: ${a.ageApprox || a.age || 'N/A'}</p>
+                    <p>❤️ Health: ${a.healthStatus || 'Healthy'}</p>
+                    <span class="badge badge-${lowerStatus}">
+                        ${displayStatus}
+                    </span>
                 </div>
-            `).join('');
-        }
+            </div>
+        `;
+    }).join('');
+}
+
 
         async function openModal(id) {
     const res = await fetch(`/api/animals/${id}`);
