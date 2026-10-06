@@ -32,8 +32,12 @@
       "dest": "public/images/$1"
     },
     {
+      "src": "/(.*).html",
+      "dest": "views/$1.html"
+    },
+    {
       "src": "/(.*)",
-      "dest": "views/$1"
+      "dest": "views/index.html"
     }
   ]
 }
