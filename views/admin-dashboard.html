@@ -1,24 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard | Animal Rescue</title>
     <link rel="stylesheet" href="/css/style.css">
 </head>
+
 <body>
 
     <nav class="navbar">
-    <div class="nav-brand"><a href="/">🐾 Animal Rescue</a></div>
-    <div class="nav-links">
-        <a href="/">Home</a>
-        <a href="/animals.html">Browse Animals</a>
-        <a href="/volunteer-dashboard.html">Volunteer Panel</a>
-        <a href="/admin-dashboard.html">Admin Panel</a>
-        <span id="nav-user"></span>
-        <a href="#" id="nav-logout" onclick="logout()">Logout</a>
-    </div>
-</nav>
+        <div class="nav-brand"><a href="/">🐾 Animal Rescue</a></div>
+        <div class="nav-links">
+            <a href="/">Home</a>
+            <a href="/animals.html">Browse Animals</a>
+            <a href="/volunteer-dashboard.html">Volunteer Panel</a>
+            <a href="/admin-dashboard.html">Admin Panel</a>
+            <span id="nav-user"></span>
+            <a href="#" id="nav-logout" onclick="logout()">Logout</a>
+        </div>
+    </nav>
 
 
     <div class="page-header">
@@ -81,7 +83,9 @@
                             </tr>
                         </thead>
                         <tbody id="adoptions-table">
-                            <tr><td colspan="8" style="text-align:center; padding:20px;">Loading...</td></tr>
+                            <tr>
+                                <td colspan="8" style="text-align:center; padding:20px;">Loading...</td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -107,7 +111,9 @@
                             </tr>
                         </thead>
                         <tbody id="volunteer-apps-table">
-                            <tr><td colspan="8" style="text-align:center; padding:20px;">Loading...</td></tr>
+                            <tr>
+                                <td colspan="8" style="text-align:center; padding:20px;">Loading...</td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -134,7 +140,9 @@
                             </tr>
                         </thead>
                         <tbody id="reports-table">
-                            <tr><td colspan="9" style="text-align:center; padding:20px;">Loading...</td></tr>
+                            <tr>
+                                <td colspan="9" style="text-align:center; padding:20px;">Loading...</td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -159,7 +167,9 @@
                             </tr>
                         </thead>
                         <tbody id="admin-animals-table">
-                            <tr><td colspan="7" style="text-align:center; padding:20px;">Loading...</td></tr>
+                            <tr>
+                                <td colspan="7" style="text-align:center; padding:20px;">Loading...</td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -213,8 +223,7 @@
                         </div>
                         <div class="form-group">
                             <label>Description</label>
-                            <textarea id="a-description" rows="3"
-                                placeholder="Describe the animal..."
+                            <textarea id="a-description" rows="3" placeholder="Describe the animal..."
                                 style="resize:vertical;"></textarea>
                         </div>
                         <div class="form-group">
@@ -244,7 +253,9 @@
                             </tr>
                         </thead>
                         <tbody id="users-table">
-                            <tr><td colspan="6" style="text-align:center; padding:20px;">Loading...</td></tr>
+                            <tr>
+                                <td colspan="6" style="text-align:center; padding:20px;">Loading...</td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -287,8 +298,8 @@
             <button class="btn btn-danger" onclick="submitVolReview('rejected')">❌ Reject</button>
         </div>
     </div>
-    <div id="vol-overlay" class="modal-overlay" style="display:none;"
-        onclick="closeModal('vol-modal', 'vol-overlay')"></div>
+    <div id="vol-overlay" class="modal-overlay" style="display:none;" onclick="closeModal('vol-modal', 'vol-overlay')">
+    </div>
 
     <footer class="footer">
         <p>🐾 Animal Rescue & Adoption Portal</p>
@@ -296,29 +307,29 @@
 
     <script src="/js/main.js"></script>
     <script>
-       async function checkAccess() {
-    const res = await fetch('/api/auth/me');
-    const data = await res.json();
+        async function checkAccess() {
+            const res = await fetch('/api/auth/me');
+            const data = await res.json();
 
-    if (!data.loggedIn) {
-        window.location.href = '/login';
-        return;
-    }
+            if (!data.loggedIn) {
+                window.location.href = '/login';
+                return;
+            }
 
-    if (data.user.role !== 'admin') {
-        window.location.href = '/login';
-        return;
-    }
+            if (data.user.role !== 'admin') {
+                window.location.href = '/login';
+                return;
+            }
 
-    // Show admin name in nav
-    const navUser = document.getElementById('nav-user');
-    if (navUser) {
-        navUser.innerHTML = '<span style="color:white; margin-left:20px;">👤 ' 
-            + data.user.name + ' (admin)</span>';
-    }
+            // Show admin name in nav
+            const navUser = document.getElementById('nav-user');
+            if (navUser) {
+                navUser.innerHTML = '<span style="color:white; margin-left:20px;">👤 '
+                    + data.user.name + ' (admin)</span>';
+            }
 
-    loadDashboard();
-}
+            loadDashboard();
+        }
 
         async function loadDashboard() {
             await Promise.all([
@@ -378,15 +389,15 @@
                     <td>${new Date(app.createdAt).toLocaleDateString()}</td>
                     <td>
                         <span class="badge ${app.status === 'pending' ? 'badge-pending' :
-                            app.status === 'approved' ? 'badge-available' : 'badge-critical'}">
+                    app.status === 'approved' ? 'badge-available' : 'badge-critical'}">
                             ${app.status}
                         </span>
                         ${app.reviewerName ?
-                            `<br><small style="color:#777;">By: ${app.reviewerName}</small>` : ''}
+                    `<br><small style="color:#777;">By: ${app.reviewerName}</small>` : ''}
                     </td>
                     <td>
                         ${app.status === 'pending' ?
-                            `<button class="btn btn-primary"
+                    `<button class="btn btn-primary"
                                 style="padding:6px 12px; font-size:13px;"
                                 onclick="openAdoptionReview('${app._id}',
                                     '${app.applicantName}',
@@ -396,10 +407,10 @@
                                     '${app.applicantAddress}')">
                                 Review
                             </button>` :
-                            `<span style="color:#777; font-size:13px;">
+                    `<span style="color:#777; font-size:13px;">
                                 ${app.status === 'approved' ? '✅ Approved' : '❌ Rejected'}
                             </span>`
-                        }
+                }
                     </td>
                 </tr>
             `).join('');
@@ -426,25 +437,25 @@
                     <td>${new Date(app.createdAt).toLocaleDateString()}</td>
                     <td>
                         <span class="badge ${app.status === 'pending' ? 'badge-pending' :
-                            app.status === 'approved' ? 'badge-available' : 'badge-critical'}">
+                    app.status === 'approved' ? 'badge-available' : 'badge-critical'}">
                             ${app.status}
                         </span>
                         ${app.reviewerName ?
-                            `<br><small style="color:#777;">By: ${app.reviewerName}</small>` : ''}
+                    `<br><small style="color:#777;">By: ${app.reviewerName}</small>` : ''}
                     </td>
                     <td>
                         ${app.status === 'pending' ?
-                            `<button class="btn btn-primary"
+                    `<button class="btn btn-primary"
                                 style="padding:6px 12px; font-size:13px;"
                                 onclick="openVolReview('${app._id}',
                                     '${app.name}', '${app.email}',
                                     '${app.phone}', '${app.reason}')">
                                 Review
                             </button>` :
-                            `<span style="color:#777; font-size:13px;">
+                    `<span style="color:#777; font-size:13px;">
                                 ${app.status === 'approved' ? '✅ Approved' : '❌ Rejected'}
                             </span>`
-                        }
+                }
                     </td>
                 </tr>
             `).join('');
@@ -474,20 +485,20 @@
                     <td>${new Date(r.createdAt).toLocaleDateString()}</td>
                     <td>
                         <span class="badge ${r.status === 'pending' ? 'badge-pending' :
-                            r.status === 'resolved' ? 'badge-available' : 'badge-adopted'}">
+                    r.status === 'resolved' ? 'badge-available' : 'badge-adopted'}">
                             ${r.status}
                         </span>
                     </td>
                     <td>
                         ${r.reviewerName ?
-                            `<small>${r.reviewerName}<br>
+                    `<small>${r.reviewerName}<br>
                             ${new Date(r.reviewedAt).toLocaleDateString()}</small>` :
-                            '<small style="color:#aaa;">Not reviewed</small>'
-                        }
+                    '<small style="color:#aaa;">Not reviewed</small>'
+                }
                     </td>
                     <td>
                         ${r.status !== 'resolved' ?
-                            `<button class="btn btn-primary"
+                    `<button class="btn btn-primary"
                                 style="padding:5px 10px; font-size:12px; margin-bottom:4px;"
                                 onclick="updateReport('${r._id}', 'reviewed')">
                                 Mark Reviewed
@@ -497,8 +508,8 @@
                                 onclick="updateReport('${r._id}', 'resolved')">
                                 Resolve
                             </button>` :
-                            '<span style="color:#777; font-size:13px;">✅ Resolved</span>'
-                        }
+                    '<span style="color:#777; font-size:13px;">✅ Resolved</span>'
+                }
                     </td>
                 </tr>
             `).join('');
@@ -521,13 +532,13 @@
                     <td>${a.age || 'N/A'}</td>
                     <td>
                         <span class="badge ${a.healthStatus === 'healthy' ?
-                            'badge-available' : 'badge-pending'}">
+                    'badge-available' : 'badge-pending'}">
                             ${a.healthStatus}
                         </span>
                     </td>
                     <td>
                         <span class="badge ${a.status === 'available' ? 'badge-available' :
-                            a.status === 'adopted' ? 'badge-adopted' : 'badge-pending'}">
+                    a.status === 'adopted' ? 'badge-adopted' : 'badge-pending'}">
                             ${a.status}
                         </span>
                     </td>
@@ -716,4 +727,5 @@
         checkAccess();
     </script>
 </body>
-</html> 
+
+</html>

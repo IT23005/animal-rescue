@@ -9,7 +9,7 @@ const isLoggedIn = (req, res, next) => {
 const isVolunteer = (req, res, next) => {
     if (req.session.userId &&
         (req.session.userRole === 'volunteer' ||
-         req.session.userRole === 'admin')) {
+            req.session.userRole === 'admin')) {
         next();
     } else {
         res.status(403).json({ message: 'Access denied. Volunteers only.' });
