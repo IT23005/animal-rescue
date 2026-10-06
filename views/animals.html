@@ -9,19 +9,18 @@
 <body>
 
     <nav class="navbar">
-    <div class="nav-brand"><a href="/index.html">🐾 Animal Rescue</a></div>
-    <div class="nav-links">
-        <a href="/index.html">Home</a>
-        <a href="/animals.html">Browse Animals</a>
-        <a href="/report.html">Report Stray</a>
-        <span id="volunteer-link"></span>
-        <span id="dashboard-link"></span>
-        <a href="/login.html" id="nav-login">Login</a>
-        <span id="nav-user"></span>
-        <a href="#" id="nav-logout" style="display:none" onclick="logout()">Logout</a>
-    </div>
-</nav>
-
+        <div class="nav-brand"><a href="/index.html">🐾 Animal Rescue</a></div>
+        <div class="nav-links">
+            <a href="/index.html">Home</a>
+            <a href="/animals.html">Browse Animals</a>
+            <a href="/report.html">Report Stray</a>
+            <span id="volunteer-link"></span>
+            <span id="dashboard-link"></span>
+            <a href="/login.html" id="nav-login">Login</a>
+            <span id="nav-user"></span>
+            <a href="#" id="nav-logout" style="display:none" onclick="logout()">Logout</a>
+        </div>
+    </nav>
 
     <div class="page-header">
         <h1>🐾 Available Animals</h1>
@@ -95,94 +94,101 @@
             renderAnimals(animals);
         }
 
-       function renderAnimals(animals) {
-    const container = document.getElementById('animals-container');
-    if (!container) return; // প্রিভেন্ট নাল রেফারেন্স এরর
+        function renderAnimals(animals) {
+            const container = document.getElementById('animals-container');
+            if (!container) return;
 
-    if (animals.length === 0) {
-        container.innerHTML = '<p style="text-align:center; padding:40px; grid-column:1/-1;">No animals found.</p>';
-        return;
-    }
+            if (animals.length === 0) {
+                container.innerHTML = '<p style="text-align:center; padding:40px; grid-column:1/-1;">No animals found.</p>';
+                return;
+            }
 
-    container.innerHTML = animals.map(a => {
-        // ডাটাবেজের ফিল্ড আর্কিটেকচার অনুযায়ী ভেরিয়েবল রিসেট (imageUrl এবং adoptionStatus)
-        const petImage = a.imageUrl || '/images/default-animal.png';
-        const petStatus = a.adoptionStatus || 'Available';
-        
-        // সেফটি স্ট্রিং ফরম্যাটিং
-        const displaySpecies = a.species ? (a.species.charAt(0).toUpperCase() + a.species.slice(1)) : 'Unknown';
-        const displayStatus = petStatus.charAt(0).toUpperCase() + petStatus.slice(1);
-        const lowerStatus = petStatus.toLowerCase();
+            container.innerHTML = animals.map(a => {
+                const petImage = a.imageUrl || '/images/default-animal.png';
+                const petStatus = a.adoptionStatus || 'Available';
+                
+                const displaySpecies = a.species ? (a.species.charAt(0).toUpperCase() + a.species.slice(1)) : 'Unknown';
+                const displayStatus = petStatus.charAt(0).toUpperCase() + petStatus.slice(1);
+                const lowerStatus = petStatus.toLowerCase();
 
-        return `
-            <div class="card" onclick="openModal('${a._id}')">
-                <img src="${petImage}" 
-                     alt="${a.name || 'Animal'}"
-                     onerror="this.onerror=null; this.src='https://via.placeholder.com/300x200?text=No+Image'">
-                <div class="card-body">
-                    <h3>${a.name || 'Unnamed'}</h3>
-                    <p>🐾 ${displaySpecies} | ${a.gender || 'Unknown'}</p>
-                    <p>📅 Age: ${a.ageApprox || a.age || 'N/A'}</p>
-                    <p>❤️ Health: ${a.healthStatus || 'Healthy'}</p>
-                    <span class="badge badge-${lowerStatus}">
-                        ${displayStatus}
-                    </span>
-                </div>
-            </div>
-        `;
-    }).join('');
-}
-
+                return `
+                    <div class="card" onclick="openModal('${a._id}')">
+                        <img src="${petImage}" 
+                             alt="${a.name || 'Animal'}"
+                             onerror="this.onerror=null; this.src='https://via.placeholder.com/300x200?text=No+Image'">
+                        <div class="card-body">
+                            <h3>${a.name || 'Unnamed'}</h3>
+                            <p>🐾 ${displaySpecies} | ${a.gender || 'Unknown'}</p>
+                            <p>📅 Age: ${a.ageApprox || a.age || 'N/A'}</p>
+                            <p>❤️ Health: ${a.healthStatus || 'Healthy'}</p>
+                            <span class="badge badge-${lowerStatus}">
+                                ${displayStatus}
+                            </span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
 
         async function openModal(id) {
-    const res = await fetch(`/api/animals/${id}`);
-    const a = await res.json();
+            const res = await fetch(`/api/animals/${id}`);
+            const a = await res.json();
 
-    document.getElementById('modal-img').src = a.image || 'https://via.placeholder.com/400x250?text=No+Image';
-    document.getElementById('modal-name').textContent = a.name;
+            // ডাটাबेজে থাকা প্রপার্টি imageUrl এবং adoptionStatus এর সাথে নিখুঁত ম্যাপিং
+            const petImage = a.imageUrl || '/images/default-animal.png';
+            const petStatus = a.adoptionStatus || 'Available';
+            const lowerStatus = petStatus.toLowerCase();
 
-    // Check if this animal has a pending application
-    let pendingNote = '';
-    try {
-        const appRes = await fetch(`/api/applications/check/${a._id}`);
-        const appData = await appRes.json();
-        if (appData.hasPending) {
-            pendingNote = `<div style="background:#fff3cd; color:#856404; padding:10px; border-radius:8px; margin:10px 0; font-weight:600;">
-                ⏳ Requested for Adopt/Foster — Under Review
-            </div>`;
-        }
-    } catch (err) {
-        console.log('Could not check application status');
-    }
+            document.getElementById('modal-img').src = petImage;
+            document.getElementById('modal-name').textContent = a.name || 'Unnamed';
 
-    document.getElementById('modal-details').innerHTML = `
-        ${pendingNote}
-        <p><strong>Species:</strong> ${a.species}</p>
-        <p><strong>Age:</strong> ${a.age}</p>
-        <p><strong>Gender:</strong> ${a.gender || 'Unknown'}</p>
-        <p><strong>Health:</strong> ${a.healthStatus}</p>
-        <p><strong>Status:</strong> ${a.status}</p>
-        <p><strong>Description:</strong> ${a.description || 'No description available.'}</p>
-    `;
+            // Check if this animal has a pending application
+            let pendingNote = '';
+            try {
+                const appRes = await fetch(`/api/applications/check/${a._id}`);
+                const appData = await appRes.json();
+                if (appData.hasPending) {
+                    pendingNote = `<div style="background:#fff3cd; color:#856404; padding:10px; border-radius:8px; margin:10px 0; font-weight:600;">
+                        ⏳ Requested for Adopt/Foster — Under Review
+                    </div>`;
+                }
+            } catch (err) {
+                console.log('Could not check application status');
+            }
 
-    const actionsDiv = document.getElementById('modal-actions');
-    if (a.status === 'available') {
-        if (currentUser) {
-            actionsDiv.innerHTML = `
-                <a href="/apply?animalId=${a._id}&name=${a.name}" class="btn btn-primary">Apply to Adopt/Foster</a>
+            const displaySpecies = a.species ? (a.species.charAt(0).toUpperCase() + a.species.slice(1)) : 'Unknown';
+            const displayStatus = petStatus.charAt(0).toUpperCase() + petStatus.slice(1);
+
+            document.getElementById('modal-details').innerHTML = `
+                ${pendingNote}
+                <p><strong>Species:</strong> ${displaySpecies}</p>
+                <p><strong>Age:</strong> ${a.ageApprox || a.age || 'N/A'}</p>
+                <p><strong>Gender:</strong> ${a.gender || 'Unknown'}</p>
+                <p><strong>Health:</strong> ${a.healthStatus || 'Healthy'}</p>
+                <p><strong>Status:</strong> ${displayStatus}</p>
+                <p><strong>Description:</strong> ${a.description || 'No description available.'}</p>
             `;
-        } else {
-            actionsDiv.innerHTML = `<a href="/login" class="btn btn-primary">Login to Apply</a>`;
-        }
-    } else if (a.status === 'adopted') {
-        actionsDiv.innerHTML = `<p style="color:#777;">✅ This animal has been adopted.</p>`;
-    } else {
-        actionsDiv.innerHTML = `<p style="color:#777;">This animal is not available.</p>`;
-    }
 
-    document.getElementById('modal').style.display = 'flex';
-    document.getElementById('modal-overlay').style.display = 'block';
-}
+            const actionsDiv = document.getElementById('modal-actions');
+            if (lowerStatus === 'available') {
+                if (currentUser) {
+                    // EXTENSION APPLIED (.html)
+                    actionsDiv.innerHTML = `
+                        <a href="/apply.html?animalId=${a._id}&name=${encodeURIComponent(a.name || '')}" class="btn btn-primary">Apply to Adopt/Foster</a>
+                    `;
+                } else {
+                    // EXTENSION APPLIED (.html)
+                    actionsDiv.innerHTML = `<a href="/login.html" class="btn btn-primary">Login to Apply</a>`;
+                }
+            } else if (lowerStatus === 'adopted') {
+                actionsDiv.innerHTML = `<p style="color:#777; font-weight:600;">✅ This animal has been adopted.</p>`;
+            } else {
+                actionsDiv.innerHTML = `<p style="color:#777; font-weight:600;">This animal is not available.</p>`;
+            }
+
+            document.getElementById('modal').style.display = 'flex';
+            document.getElementById('modal-overlay').style.display = 'block';
+        }
 
         function closeModal() {
             document.getElementById('modal').style.display = 'none';
