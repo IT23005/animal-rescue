@@ -32,7 +32,7 @@ router.get('/check/:animalId', async (req, res) => {
     }
 });
 
-// POST submit application (no login needed)
+// POST submit application (Open to the public - no login required)
 router.post('/', async (req, res) => {
     try {
         const {
@@ -44,28 +44,32 @@ router.post('/', async (req, res) => {
         } = req.body;
 
         if (!applicantName || !applicantPhone || !applicantAddress) {
-            return res.status(400).json({ message: 'Your name, phone and address are required' });
+            return res.status(400).json({ message: 'Your name, phone number, and address are required' });
         }
-        if (!reason) {
-            return res.status(400).json({ message: 'Please provide a reason' });
-        }
+
+        const appType = type || 'adoption';
+        const appReason = reason || (appType === 'foster'
+            ? 'Applied to foster from homepage'
+            : 'Applied to adopt from homepage');
 
         const application = new Application({
             animal: animalId,
-            animalName,
+            animalName: animalName || 'Rescue Animal',
             applicantName,
-            applicantEmail,
+            applicantEmail: applicantEmail || '',
             applicantPhone,
             applicantAddress,
-            type,
-            reason,
-            experience,
-            homeType,
+            type: appType,
+            reason: appReason,
+            experience: experience || 'Not specified',
+            homeType: homeType || 'house',
             hasOtherPets: hasOtherPets === 'true'
         });
 
         await application.save();
-        res.status(201).json({ message: 'Application submitted successfully' });
+        res.status(201).json({
+            message: 'Application submitted successfully! You will be contacted by our community shortly.'
+        });
     } catch (err) {
         res.status(500).json({ message: 'Server error', error: err.message });
     }

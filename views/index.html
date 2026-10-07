@@ -1,26 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Animal Rescue & Adoption Portal</title>
     <link rel="stylesheet" href="/css/style.css">
 </head>
+
 <body>
 
-  <nav class="navbar">
-    <div class="nav-brand"><a href="/index.html">🐾 Animal Rescue</a></div>
-    <div class="nav-links">
-        <a href="/index.html">Home</a>
-        <a href="/animals.html">Browse Animals</a>
-        <a href="/report.html">Report Stray</a>
-        <span id="volunteer-link"></span>
-        <span id="dashboard-link"></span>
-        <a href="/login.html" id="nav-login">Login</a>
-        <span id="nav-user"></span>
-        <a href="#" id="nav-logout" style="display:none" onclick="logout()">Logout</a>
-    </div>
-</nav>
+    <nav class="navbar">
+        <div class="nav-brand"><a href="/index.html">🐾 Animal Rescue</a></div>
+        <div class="nav-links">
+            <a href="/index.html">Home</a>
+            <a href="/animals.html">Browse Animals</a>
+            <a href="/report.html">Report Stray</a>
+            <span id="volunteer-link"></span>
+            <span id="dashboard-link"></span>
+            <a href="/login.html" id="nav-login">Login</a>
+            <span id="nav-user"></span>
+            <a href="#" id="nav-logout" style="display:none" onclick="logout()">Logout</a>
+        </div>
+    </nav>
 
     <!-- HERO -->
     <section class="hero">
@@ -28,21 +30,100 @@
             <h1>🐾 Giving Every Stray a Second Chance</h1>
             <p>Adopt a loving companion, report an animal in distress, or join our community of rescue volunteers.</p>
             <div class="hero-buttons">
-                <a href="/animals" class="hero-btn">
+                <a href="#available-animals" class="hero-btn">
                     <span class="btn-icon">🐾</span>
-                    <span>Browse Animals</span>
+                    <span>Adopt / Foster</span>
                 </a>
-                <a href="/report" class="hero-btn">
+                <a href="/report.html" class="hero-btn">
                     <span class="btn-icon">📍</span>
                     <span>Report a Stray</span>
                 </a>
-                <a href="/volunteer-apply" class="hero-btn">
+                <a href="/volunteer-apply.html" class="hero-btn">
                     <span class="btn-icon">🤝</span>
                     <span>Become a Volunteer</span>
                 </a>
             </div>
         </div>
     </section>
+
+    <!-- AVAILABLE ANIMALS FOR ADOPTION / FOSTER -->
+    <section class="home-animals-section" id="available-animals">
+        <div class="container">
+            <div class="section-title-wrap">
+                <h2>🐾 Available For Adoption & Foster</h2>
+                <p>No account required — open to anyone in the community willing to give a pet love and care.</p>
+            </div>
+
+            <div id="home-animals-grid" class="cards-grid">
+                <p style="text-align:center; grid-column:1/-1; padding:30px;">Loading animals...</p>
+            </div>
+
+            <div style="text-align:center; margin-top:35px;">
+                <a href="/animals.html" class="btn btn-secondary" style="border-radius:50px; padding:12px 30px;">
+                    View All Animals & Filters →
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- PUBLIC ADOPTION / FOSTER MODAL -->
+    <div id="adopt-modal" class="modal" style="display:none;">
+        <div class="modal-content" style="max-width:550px;">
+            <button class="modal-close" onclick="closeAdoptModal()">✕</button>
+            <h2 id="modal-title" style="color:#2c7a4b; margin-bottom:5px;">🐾 Apply for Pet</h2>
+            <p id="modal-animal-sub" style="color:#666; font-size:14px; margin-bottom:15px;"></p>
+
+            <!-- COMMUNITY CONTACT NOTICE -->
+            <div class="notice-banner">
+                📢 <strong>Important Notice:</strong> You do <em>not</em> need an account. Once your application is
+                submitted, <strong>you will be contacted by our community</strong> to verify details and finalize the
+                adoption/foster handover.
+            </div>
+
+            <div id="adopt-msg" class="message" style="display:none; margin-bottom:15px;"></div>
+
+            <form id="public-adopt-form">
+                <input type="hidden" id="form-animal-id">
+                <input type="hidden" id="form-animal-name">
+
+                <div class="form-group">
+                    <label>Your Full Name *</label>
+                    <input type="text" id="applicantName" placeholder="e.g. John Doe" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Phone Number *</label>
+                    <input type="tel" id="applicantPhone" placeholder="e.g. 017xxxxxxxx or +1..." required>
+                </div>
+
+                <div class="form-group">
+                    <label>Home Address *</label>
+                    <input type="text" id="applicantAddress" placeholder="Street, City, Area" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Application Intent *</label>
+                    <select id="appType" required>
+                        <option value="adoption">Adoption (Forever Home)</option>
+                        <option value="foster">Foster (Temporary Care)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Prior Experience with Pets</label>
+                    <textarea id="appExperience" rows="3"
+                        placeholder="Tell us if you have cared for dogs/cats before, current pets, etc. (Optional)"
+                        style="resize:vertical;"></textarea>
+                </div>
+
+                <button type="submit" id="btn-submit-app" class="btn btn-primary btn-full"
+                    style="padding:14px; font-size:16px; border-radius:8px;">
+                    Submit Application
+                </button>
+            </form>
+        </div>
+    </div>
+    <div id="adopt-overlay" class="modal-overlay" style="display:none;" onclick="closeAdoptModal()"></div>
 
     <!-- FEATURES -->
     <section class="features">
@@ -100,7 +181,12 @@
 
     <script src="/js/main.js"></script>
     <script>
-        // Load stats
+        // Load stats & animals on page load
+        async function initHome() {
+            loadStats();
+            loadAvailableAnimals();
+        }
+
         async function loadStats() {
             try {
                 const res = await fetch('/api/animals/stats');
@@ -109,10 +195,114 @@
                 document.getElementById('stat-adopted').textContent = data.adopted || 0;
                 document.getElementById('stat-reports').textContent = data.reports || 0;
             } catch (err) {
-                console.log('Stats not loaded yet');
+                console.log('Stats not loaded');
             }
         }
-        loadStats();
+
+        async function loadAvailableAnimals() {
+            const container = document.getElementById('home-animals-grid');
+            try {
+                const res = await fetch('/api/animals?status=available');
+                const animals = await res.json();
+
+                if (!animals || animals.length === 0) {
+                    container.innerHTML = '<p style="text-align:center; grid-column:1/-1; padding:30px;">No animals currently available for adoption.</p>';
+                    return;
+                }
+
+                container.innerHTML = animals.slice(0, 6).map(a => {
+                    const petImage = a.image || '/images/default-animal.png';
+                    const displaySpecies = a.species ? (a.species.charAt(0).toUpperCase() + a.species.slice(1)) : 'Animal';
+                    return `
+                        <div class="card home-pet-card">
+                            <img src="${petImage}" alt="${a.name}" onerror="this.onerror=null; this.src='https://via.placeholder.com/300x200?text=No+Image'">
+                            <div class="card-body">
+                                <h3>${a.name || 'Unnamed'}</h3>
+                                <p>🐾 ${displaySpecies} | ${a.gender || 'Unknown'}</p>
+                                <p>📅 Age: ${a.age || 'N/A'}</p>
+                                <p>❤️ Health: ${a.healthStatus || 'Healthy'}</p>
+                                <button class="btn btn-primary btn-full" style="margin-top:15px; border-radius:6px;" 
+                                        onclick="openAdoptModal('${a._id}', '${a.name || 'this animal'}')">
+                                    Adopt / Foster Me 🐾
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            } catch (err) {
+                container.innerHTML = '<p style="text-align:center; grid-column:1/-1; color:red;">Failed to load available animals.</p>';
+            }
+        }
+
+        function openAdoptModal(animalId, animalName) {
+            document.getElementById('form-animal-id').value = animalId;
+            document.getElementById('form-animal-name').value = animalName;
+            document.getElementById('modal-title').textContent = `🐾 Apply for ${animalName}`;
+            document.getElementById('modal-animal-sub').textContent = `Apply for adoption or foster care for ${animalName}`;
+
+            const msg = document.getElementById('adopt-msg');
+            msg.style.display = 'none';
+            msg.textContent = '';
+
+            document.getElementById('adopt-modal').style.display = 'block';
+            document.getElementById('adopt-overlay').style.display = 'block';
+        }
+
+        function closeAdoptModal() {
+            document.getElementById('adopt-modal').style.display = 'none';
+            document.getElementById('adopt-overlay').style.display = 'none';
+            document.getElementById('public-adopt-form').reset();
+        }
+
+        document.getElementById('public-adopt-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const submitBtn = document.getElementById('btn-submit-app');
+            const msg = document.getElementById('adopt-msg');
+
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Submitting...';
+
+            const payload = {
+                animalId: document.getElementById('form-animal-id').value,
+                animalName: document.getElementById('form-animal-name').value,
+                applicantName: document.getElementById('applicantName').value.trim(),
+                applicantPhone: document.getElementById('applicantPhone').value.trim(),
+                applicantAddress: document.getElementById('applicantAddress').value.trim(),
+                type: document.getElementById('appType').value,
+                experience: document.getElementById('appExperience').value.trim()
+            };
+
+            try {
+                const res = await fetch('/api/applications', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const result = await res.json();
+
+                if (res.ok) {
+                    msg.className = 'message success';
+                    msg.innerHTML = `✅ ${result.message}`;
+                    msg.style.display = 'block';
+                    document.getElementById('public-adopt-form').reset();
+                    setTimeout(() => { closeAdoptModal(); }, 4000);
+                } else {
+                    msg.className = 'message error';
+                    msg.textContent = `❌ ${result.message}`;
+                    msg.style.display = 'block';
+                }
+            } catch (err) {
+                msg.className = 'message error';
+                msg.textContent = '❌ Failed to submit application. Please check connection.';
+                msg.style.display = 'block';
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Submit Application';
+            }
+        });
+
+        initHome();
     </script>
 </body>
+
 </html>
