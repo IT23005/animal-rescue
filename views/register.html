@@ -48,7 +48,7 @@
                 <button type="submit" class="btn btn-primary btn-full">Create Account</button>
             </form>
 
-            <p class="auth-link">Already have an account? <a href="/login">Login here</a></p>
+            <p class="auth-link">Already have an account? <a href="/login.html">Login here</a></p>
         </div>
     </div>
 
@@ -79,7 +79,7 @@
                     msgDiv.className = 'message success';
                     msgDiv.textContent = '✅ Registration successful! Redirecting...';
                     msgDiv.style.display = 'block';
-                    setTimeout(() => window.location.href = '/animals', 1500);
+                    setTimeout(() => window.location.href = '/animals.html', 1500);
                 } else {
                     msgDiv.className = 'message error';
                     msgDiv.textContent = '❌ ' + result.message;

@@ -194,12 +194,12 @@ async function checkAccess() {
     const data = await res.json();
 
     if (!data.loggedIn) {
-        window.location.href = '/login';
+        window.location.href = '/login.html';
         return;
     }
 
     if (data.user.role !== 'volunteer' && data.user.role !== 'admin') {
-        window.location.href = '/';
+        window.location.href = '/login.html';
         return;
     }
 
@@ -207,7 +207,7 @@ async function checkAccess() {
     if (data.user.role === 'admin') {
         const adminLink = document.getElementById('admin-link');
         if (adminLink) {
-            adminLink.innerHTML = '<a href="/admin">Admin Panel</a>';
+            adminLink.innerHTML = '<a href="/admin.html">Admin Panel</a>';
         }
     }
 
