@@ -107,53 +107,55 @@
             }
 
             container.innerHTML = animals.map(a => {
-                const petImage = a.imageUrl || '/images/default-animal.png';
-                const petStatus = a.adoptionStatus || 'Available';
+                // ⚡ ডাটাবেজ স্ক্রিনশট অনুযায়ী হুবহু ফিল্ড ম্যাপিং (a.image এবং a.status)
+                const petImage = a.image || '/images/default-animal.png';
+                const petStatus = a.status || 'available';
 
+                // সেফটি স্ট্রিং ফরম্যাটিং
                 const displaySpecies = a.species ? (a.species.charAt(0).toUpperCase() + a.species.slice(1)) : 'Unknown';
                 const displayStatus = petStatus.charAt(0).toUpperCase() + petStatus.slice(1);
                 const lowerStatus = petStatus.toLowerCase();
 
                 return `
-                    <div class="card" onclick="openModal('${a._id}')">
-                        <img src="${petImage}" 
-                             alt="${a.name || 'Animal'}"
-                             onerror="this.onerror=null; this.src='https://via.placeholder.com/300x200?text=No+Image'">
-                        <div class="card-body">
-                            <h3>${a.name || 'Unnamed'}</h3>
-                            <p>🐾 ${displaySpecies} | ${a.gender || 'Unknown'}</p>
-                            <p>📅 Age: ${a.ageApprox || a.age || 'N/A'}</p>
-                            <p>❤️ Health: ${a.healthStatus || 'Healthy'}</p>
-                            <span class="badge badge-${lowerStatus}">
-                                ${displayStatus}
-                            </span>
-                        </div>
-                    </div>
-                `;
+            <div class="card" onclick="openModal('${a._id}')">
+                <img src="${petImage}" 
+                     alt="${a.name || 'Animal'}"
+                     onerror="this.onerror=null; this.src='https://via.placeholder.com/300x200?text=No+Image'">
+                <div class="card-body">
+                    <h3>${a.name || 'Unnamed'}</h3>
+                    <p>🐾 ${displaySpecies} | ${a.gender || 'Unknown'}</p>
+                    <p>📅 Age: ${a.age || 'N/A'}</p>
+                    <p>❤️ Health: ${a.healthStatus || 'Healthy'}</p>
+                    <span class="badge badge-${lowerStatus}">
+                        ${displayStatus}
+                    </span>
+                </div>
+            </div>
+        `;
             }).join('');
         }
+
 
         async function openModal(id) {
             const res = await fetch(`/api/animals/${id}`);
             const a = await res.json();
 
-            // ডাটাबेজে থাকা প্রপার্টি imageUrl এবং adoptionStatus এর সাথে নিখুঁত ম্যাপিং
-            const petImage = a.imageUrl || '/images/default-animal.png';
-            const petStatus = a.adoptionStatus || 'Available';
+            // ⚡ ডাটাবেজ স্ক্রিনশট অনুযায়ী হুবহু image ফিল্ড ম্যাপিং
+            const petImage = a.image || '/images/default-animal.png';
+            const petStatus = a.status || 'available';
             const lowerStatus = petStatus.toLowerCase();
 
             document.getElementById('modal-img').src = petImage;
             document.getElementById('modal-name').textContent = a.name || 'Unnamed';
 
-            // Check if this animal has a pending application
             let pendingNote = '';
             try {
                 const appRes = await fetch(`/api/applications/check/${a._id}`);
                 const appData = await appRes.json();
                 if (appData.hasPending) {
                     pendingNote = `<div style="background:#fff3cd; color:#856404; padding:10px; border-radius:8px; margin:10px 0; font-weight:600;">
-                        ⏳ Requested for Adopt/Foster — Under Review
-                    </div>`;
+                ⏳ Requested for Adopt/Foster — Under Review
+            </div>`;
                 }
             } catch (err) {
                 console.log('Could not check application status');
@@ -163,24 +165,22 @@
             const displayStatus = petStatus.charAt(0).toUpperCase() + petStatus.slice(1);
 
             document.getElementById('modal-details').innerHTML = `
-                ${pendingNote}
-                <p><strong>Species:</strong> ${displaySpecies}</p>
-                <p><strong>Age:</strong> ${a.ageApprox || a.age || 'N/A'}</p>
-                <p><strong>Gender:</strong> ${a.gender || 'Unknown'}</p>
-                <p><strong>Health:</strong> ${a.healthStatus || 'Healthy'}</p>
-                <p><strong>Status:</strong> ${displayStatus}</p>
-                <p><strong>Description:</strong> ${a.description || 'No description available.'}</p>
-            `;
+        ${pendingNote}
+        <p><strong>Species:</strong> ${displaySpecies}</p>
+        <p><strong>Age:</strong> ${a.age || 'N/A'}</p>
+        <p><strong>Gender:</strong> ${a.gender || 'Unknown'}</p>
+        <p><strong>Health:</strong> ${a.healthStatus || 'Healthy'}</p>
+        <p><strong>Status:</strong> ${displayStatus}</p>
+        <p><strong>Description:</strong> ${a.description || 'No description available.'}</p>
+    `;
 
             const actionsDiv = document.getElementById('modal-actions');
             if (lowerStatus === 'available') {
                 if (currentUser) {
-                    // EXTENSION APPLIED (.html)
                     actionsDiv.innerHTML = `
-                        <a href="/apply.html?animalId=${a._id}&name=${encodeURIComponent(a.name || '')}" class="btn btn-primary">Apply to Adopt/Foster</a>
-                    `;
+                <a href="/apply.html?animalId=${a._id}&name=${encodeURIComponent(a.name || '')}" class="btn btn-primary">Apply to Adopt/Foster</a>
+            `;
                 } else {
-                    // EXTENSION APPLIED (.html)
                     actionsDiv.innerHTML = `<a href="/login.html" class="btn btn-primary">Login to Apply</a>`;
                 }
             } else if (lowerStatus === 'adopted') {
@@ -192,6 +192,7 @@
             document.getElementById('modal').style.display = 'flex';
             document.getElementById('modal-overlay').style.display = 'block';
         }
+
 
         function closeModal() {
             document.getElementById('modal').style.display = 'none';
