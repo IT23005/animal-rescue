@@ -14,7 +14,7 @@
         <div class="nav-brand"><a href="/index.html">🐾 Animal Rescue</a></div>
         <div class="nav-links">
             <a href="/index.html">Home</a>
-            <a href="/animals.html">Browse Animals</a>
+            <a href="/index.html#available-animals">Browse Animals</a>
             <a href="/report.html">Report Stray</a>
             <span id="volunteer-link"></span>
             <span id="dashboard-link"></span>
@@ -176,13 +176,9 @@
 
             const actionsDiv = document.getElementById('modal-actions');
             if (lowerStatus === 'available') {
-                if (currentUser) {
-                    actionsDiv.innerHTML = `
+                actionsDiv.innerHTML = `
                 <a href="/apply.html?animalId=${a._id}&name=${encodeURIComponent(a.name || '')}" class="btn btn-primary">Apply to Adopt/Foster</a>
             `;
-                } else {
-                    actionsDiv.innerHTML = `<a href="/login.html" class="btn btn-primary">Login to Apply</a>`;
-                }
             } else if (lowerStatus === 'adopted') {
                 actionsDiv.innerHTML = `<p style="color:#777; font-weight:600;">✅ This animal has been adopted.</p>`;
             } else {

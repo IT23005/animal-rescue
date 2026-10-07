@@ -1,27 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Volunteer Dashboard | Animal Rescue</title>
     <link rel="stylesheet" href="/css/style.css">
 </head>
+
 <body>
 
-   <nav class="navbar">
-    <div class="nav-brand"><a href="/index.html">🐾 Animal Rescue</a></div>
-    <div class="nav-links">
-        <a href="/index.html">Home</a>
-        <a href="/animals.html">Browse Animals</a>
-        <a href="/report.html">Report Stray</a>
-        <span id="admin-link"></span>
-        <span id="volunteer-link"></span>
-        <span id="dashboard-link"></span>
-        <a href="/login.html" id="nav-login">Login</a>
-        <span id="nav-user"></span>
-        <a href="#" id="nav-logout" style="display:none" onclick="logout()">Logout</a>
-    </div>
-</nav>
+    <nav class="navbar">
+        <div class="nav-brand"><a href="/index.html">🐾 Animal Rescue</a></div>
+        <div class="nav-links">
+            <a href="/index.html">Home</a>
+            <a href="/index.html#available-animals">Browse Animals</a>
+            <a href="/report.html">Report Stray</a>
+            <!--<span id="admin-link"></span>
+        <span id="volunteer-link"></span>-->
+            <span id="dashboard-link"></span>
+            <a href="/login.html" id="nav-login">Login</a>
+            <span id="nav-user"></span>
+            <a href="#" id="nav-logout" style="display:none" onclick="logout()">Logout</a>
+        </div>
+    </nav>
 
 
     <div class="page-header">
@@ -72,7 +74,9 @@
                             </tr>
                         </thead>
                         <tbody id="applications-table">
-                            <tr><td colspan="7" style="text-align:center; padding:20px;">Loading...</td></tr>
+                            <tr>
+                                <td colspan="7" style="text-align:center; padding:20px;">Loading...</td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -126,8 +130,8 @@
                         </div>
                         <div class="form-group">
                             <label>Description</label>
-                            <textarea id="a-description" rows="3"
-                                placeholder="Describe the animal..." style="resize:vertical;"></textarea>
+                            <textarea id="a-description" rows="3" placeholder="Describe the animal..."
+                                style="resize:vertical;"></textarea>
                         </div>
                         <div class="form-group">
                             <label>Photo</label>
@@ -153,8 +157,7 @@
                     </div>
                     <div class="form-group">
                         <label>Medical Note</label>
-                        <textarea id="med-note" rows="4"
-                            placeholder="Vaccination, treatment, checkup details..."
+                        <textarea id="med-note" rows="4" placeholder="Vaccination, treatment, checkup details..."
                             style="resize:vertical;"></textarea>
                     </div>
                     <button class="btn btn-primary" onclick="addMedicalLog()">Add Log</button>
@@ -172,7 +175,8 @@
         <div id="review-details" style="margin:15px 0; color:#555;"></div>
         <div class="form-group">
             <label>Review Note (Optional)</label>
-            <textarea id="review-note" rows="3" style="width:100%; padding:10px; border:2px solid #e0e0e0; border-radius:8px;"></textarea>
+            <textarea id="review-note" rows="3"
+                style="width:100%; padding:10px; border:2px solid #e0e0e0; border-radius:8px;"></textarea>
         </div>
         <div style="display:flex; gap:10px; margin-top:15px;">
             <button class="btn btn-primary" onclick="submitReview('approved')">✅ Approve</button>
@@ -188,31 +192,31 @@
     <script src="/js/main.js"></script>
     <script>
 
-        
-async function checkAccess() {
-    const res = await fetch('/api/auth/me');
-    const data = await res.json();
 
-    if (!data.loggedIn) {
-        window.location.href = '/login.html';
-        return;
-    }
+        async function checkAccess() {
+            const res = await fetch('/api/auth/me');
+            const data = await res.json();
 
-    if (data.user.role !== 'volunteer' && data.user.role !== 'admin') {
-        window.location.href = '/login.html';
-        return;
-    }
+            if (!data.loggedIn) {
+                window.location.href = '/login.html';
+                return;
+            }
 
-    // Show admin panel link if admin
-    if (data.user.role === 'admin') {
-        const adminLink = document.getElementById('admin-link');
-        if (adminLink) {
-            adminLink.innerHTML = '<a href="/admin.html">Admin Panel</a>';
+            if (data.user.role !== 'volunteer' && data.user.role !== 'admin') {
+                window.location.href = '/login.html';
+                return;
+            }
+
+            // Show admin panel link if admin
+            if (data.user.role === 'admin') {
+                const adminLink = document.getElementById('admin-link');
+                if (adminLink) {
+                    adminLink.innerHTML = '<a href="/admin.html">Admin Panel</a>';
+                }
+            }
+
+            loadDashboard();
         }
-    }
-
-    loadDashboard();
-}
 
         async function loadDashboard() {
             await loadApplications();
@@ -256,11 +260,11 @@ async function checkAccess() {
                         ${app.status}</span></td>
                     <td>
                         ${app.status === 'pending' ?
-                            `<button class="btn btn-primary" style="padding:6px 12px; font-size:13px;"
+                    `<button class="btn btn-primary" style="padding:6px 12px; font-size:13px;"
                                 onclick="openReview('${app._id}', '${app.applicant?.name}', '${app.animal?.name}', '${app.type}', '${app.reason}')">
                                 Review</button>` :
-                            '<span style="color:#777; font-size:13px;">Done</span>'
-                        }
+                    '<span style="color:#777; font-size:13px;">Done</span>'
+                }
                     </td>
                 </tr>
             `).join('');
@@ -382,4 +386,5 @@ async function checkAccess() {
         checkAccess();
     </script>
 </body>
+
 </html>
