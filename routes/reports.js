@@ -5,11 +5,11 @@ const path = require('path');
 const Report = require('../models/Report');
 const { isLoggedIn, isVolunteer } = require('../middleware/auth');
 
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => cb(null, 'uploads/'),
-    filename: (req, file, cb) => cb(null, Date.now() + path.extname(file.originalname))
+const storage = multer.memoryStorage();
+const upload = multer({
+    storage,
+    limits: { fileSize: 5 * 1024 * 1024 } // 5MB limit
 });
-const upload = multer({ storage });
 
 // GET all reports (volunteer + admin)
 router.get('/', isLoggedIn, isVolunteer, async (req, res) => {
@@ -36,6 +36,11 @@ router.post('/', upload.single('image'), async (req, res) => {
             return res.status(400).json({ message: 'Location and description are required' });
         }
 
+        let imageUrl = null;
+        if (req.file) {
+            imageUrl = `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}`;
+        }
+
         const report = new Report({
             reporterName,
             reporterPhone,
@@ -43,7 +48,7 @@ router.post('/', upload.single('image'), async (req, res) => {
             species,
             location,
             description,
-            image: req.file ? '/uploads/' + req.file.filename : null
+            image: imageUrl
         });
 
         await report.save();

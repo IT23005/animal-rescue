@@ -5,12 +5,12 @@ const path = require('path');
 const Animal = require('../models/Animal');
 const { isLoggedIn, isVolunteer } = require('../middleware/auth');
 
-// Multer setup for image upload
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => cb(null, 'uploads/'),
-    filename: (req, file, cb) => cb(null, Date.now() + path.extname(file.originalname))
+// Multer setup for image upload (Memory storage for serverless environments)
+const storage = multer.memoryStorage();
+const upload = multer({
+    storage,
+    limits: { fileSize: 5 * 1024 * 1024 } // 5MB limit
 });
-const upload = multer({ storage });
 
 // GET all animals (with filters)
 router.get('/', async (req, res) => {
@@ -68,9 +68,13 @@ router.get('/:id', async (req, res) => {
 router.post('/', isLoggedIn, isVolunteer, upload.single('image'), async (req, res) => {
     try {
         const { name, species, age, gender, healthStatus, description } = req.body;
+        let imageUrl = null;
+        if (req.file) {
+            imageUrl = `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}`;
+        }
         const animal = new Animal({
             name, species, age, gender, healthStatus, description,
-            image: req.file ? '/uploads/' + req.file.filename : null,
+            image: imageUrl,
             addedBy: req.session.userId
         });
         await animal.save();

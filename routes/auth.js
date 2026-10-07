@@ -43,9 +43,12 @@ router.post('/register', async (req, res) => {
         req.session.userRole = user.role;
         req.session.userName = user.name;
 
-        res.status(201).json({
-            message: 'Registration successful',
-            user: { id: user._id, name: user.name, role: user.role }
+        req.session.save((err) => {
+            if (err) console.error('Session save error:', err);
+            res.status(201).json({
+                message: 'Registration successful',
+                user: { id: user._id, name: user.name, role: user.role }
+            });
         });
 
     } catch (err) {
@@ -80,9 +83,12 @@ router.post('/login', async (req, res) => {
         req.session.userRole = user.role;
         req.session.userName = user.name;
 
-        res.json({
-            message: 'Login successful',
-            user: { id: user._id, name: user.name, role: user.role }
+        req.session.save((err) => {
+            if (err) console.error('Session save error:', err);
+            res.json({
+                message: 'Login successful',
+                user: { id: user._id, name: user.name, role: user.role }
+            });
         });
     } catch (err) {
         res.status(500).json({ message: 'Server error', error: err.message });
@@ -91,8 +97,11 @@ router.post('/login', async (req, res) => {
 
 // LOGOUT
 router.post('/logout', (req, res) => {
-    req.session.destroy();
-    res.json({ message: 'Logged out successfully' });
+    req.session.destroy((err) => {
+        if (err) console.error('Logout error:', err);
+        res.clearCookie('connect.sid');
+        res.json({ message: 'Logged out successfully' });
+    });
 });
 
 // GET current user (check if logged in)
@@ -249,7 +258,9 @@ router.put('/profile', isLoggedIn, async (req, res) => {
         // Update session name
         req.session.userName = user.name;
 
-        res.json({ message: 'Profile updated', user });
+        req.session.save(() => {
+            res.json({ message: 'Profile updated', user });
+        });
     } catch (err) {
         res.status(500).json({ message: 'Server error' });
     }

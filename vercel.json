@@ -2,42 +2,151 @@
   "version": 2,
   "builds": [
     {
-      "src": "server.js",
+      "src": "api/index.js",
       "use": "@vercel/node"
     },
     {
-      "src": "views/**/*",
+      "src": "public/**",
       "use": "@vercel/static"
     },
     {
-      "src": "public/**/*",
+      "src": "views/**",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "uploads/**",
       "use": "@vercel/static"
     }
   ],
   "routes": [
     {
-      "src": "/api/(.*)",
-      "dest": "server.js"
-    },
-    {
       "src": "/css/(.*)",
-      "dest": "public/css/$1"
+      "dest": "/public/css/$1",
+      "headers": {
+        "cache-control": "public, max-age=31536000, immutable"
+      }
     },
     {
       "src": "/js/(.*)",
-      "dest": "public/js/$1"
+      "dest": "/public/js/$1",
+      "headers": {
+        "cache-control": "public, max-age=31536000, immutable"
+      }
     },
     {
       "src": "/images/(.*)",
-      "dest": "public/images/$1"
+      "dest": "/public/images/$1",
+      "headers": {
+        "cache-control": "public, max-age=31536000, immutable"
+      }
+    },
+    {
+      "src": "/uploads/(.*)",
+      "dest": "/uploads/$1"
+    },
+    {
+      "src": "/api/(.*)",
+      "dest": "/api/index.js"
+    },
+    {
+      "src": "/",
+      "dest": "/views/index.html"
+    },
+    {
+      "src": "/index",
+      "dest": "/views/index.html"
+    },
+    {
+      "src": "/index.html",
+      "dest": "/views/index.html"
+    },
+    {
+      "src": "/login",
+      "dest": "/views/login.html"
+    },
+    {
+      "src": "/login.html",
+      "dest": "/views/login.html"
+    },
+    {
+      "src": "/register",
+      "dest": "/views/register.html"
+    },
+    {
+      "src": "/register.html",
+      "dest": "/views/register.html"
+    },
+    {
+      "src": "/animals",
+      "dest": "/views/animals.html"
+    },
+    {
+      "src": "/animals.html",
+      "dest": "/views/animals.html"
+    },
+    {
+      "src": "/report",
+      "dest": "/views/report.html"
+    },
+    {
+      "src": "/report.html",
+      "dest": "/views/report.html"
+    },
+    {
+      "src": "/apply",
+      "dest": "/views/apply.html"
+    },
+    {
+      "src": "/apply.html",
+      "dest": "/views/apply.html"
+    },
+    {
+      "src": "/profile",
+      "dest": "/views/profile.html"
+    },
+    {
+      "src": "/profile.html",
+      "dest": "/views/profile.html"
+    },
+    {
+      "src": "/volunteer-apply",
+      "dest": "/views/volunteer-apply.html"
+    },
+    {
+      "src": "/volunteer-apply.html",
+      "dest": "/views/volunteer-apply.html"
+    },
+    {
+      "src": "/volunteer",
+      "dest": "/views/volunteer-dashboard.html"
+    },
+    {
+      "src": "/volunteer-dashboard",
+      "dest": "/views/volunteer-dashboard.html"
+    },
+    {
+      "src": "/volunteer-dashboard.html",
+      "dest": "/views/volunteer-dashboard.html"
+    },
+    {
+      "src": "/admin",
+      "dest": "/views/admin-dashboard.html"
+    },
+    {
+      "src": "/admin-dashboard",
+      "dest": "/views/admin-dashboard.html"
+    },
+    {
+      "src": "/admin-dashboard.html",
+      "dest": "/views/admin-dashboard.html"
     },
     {
       "src": "/(.*).html",
-      "dest": "views/$1.html"
+      "dest": "/views/$1.html"
     },
     {
       "src": "/(.*)",
-      "dest": "views/index.html"
+      "dest": "/api/index.js"
     }
   ]
 }
