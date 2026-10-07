@@ -74,7 +74,9 @@ router.post('/login', async (req, res) => {
 
         // If trying to login as admin, check secret code
         if (user.role === 'admin') {
-            if (adminCode !== process.env.ADMIN_SECRET_CODE) {
+            const expectedCode = (process.env.ADMIN_SECRET_CODE || '').trim();
+            const providedCode = (adminCode || '').trim();
+            if (providedCode !== expectedCode) {
                 return res.status(403).json({ message: 'Invalid admin code' });
             }
         }
