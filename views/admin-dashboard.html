@@ -9,20 +9,27 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/css/style.css?v=20261008-3">
+    <link rel="stylesheet" href="/css/style.css?v=20261008-nav">
 </head>
 
 <body>
 
     <nav class="navbar">
-        <div class="nav-brand"><a href="/">🐾 Animal Rescue</a></div>
-        <div class="nav-links">
-            <a href="/">Home</a>
-            <a href="/index.html#available-animals">Browse Animals</a>
-            <a href="/volunteer-dashboard.html">Volunteer Panel</a>
-            <a href="/admin-dashboard.html">Admin Panel</a>
-            <span id="nav-user"></span>
-            <a href="#" id="nav-logout" onclick="logout()">Logout</a>
+        <div class="nav-brand"><a href="/index.html">🐾 Animal Rescue</a></div>
+        <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+        <div class="nav-links" id="nav-links">
+            <a href="/index.html" class="nav-item">Home</a>
+            <a href="/animals.html" class="nav-item">Browse Animals</a>
+            <a href="/report.html" class="nav-item">Report Stray</a>
+            <span id="volunteer-link" class="nav-dynamic"></span>
+            <span id="dashboard-link" class="nav-dynamic"></span>
+            <a href="/login.html" id="nav-login" class="nav-item">Login</a>
+            <span id="nav-user" class="nav-dynamic"></span>
+            <a href="#" id="nav-logout" class="nav-item nav-logout-btn" style="display:none" onclick="logout(event)">Logout</a>
         </div>
     </nav>
 
@@ -309,7 +316,7 @@
         <p>🐾 Animal Rescue & Adoption Portal</p>
     </footer>
 
-    <script src="/js/main.js?v=20261008-2"></script>
+    <script src="/js/main.js?v=20261008-nav"></script>
     <script>
         async function checkAccess() {
             const res = await fetch('/api/auth/me');
@@ -323,13 +330,6 @@
             if (data.user.role !== 'admin') {
                 window.location.href = '/login.html';
                 return;
-            }
-
-            // Show admin name in nav
-            const navUser = document.getElementById('nav-user');
-            if (navUser) {
-                navUser.innerHTML = '<span style="color:white; margin-left:20px;">👤 '
-                    + data.user.name + ' (admin)</span>';
             }
 
             loadDashboard();

@@ -1,3 +1,17 @@
+// Helper to escape HTML to prevent XSS
+function escapeHtml(text) {
+    if (!text) return '';
+    const map = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#039;'
+    };
+    return text.toString().replace(/[&<>"']/g, m => map[m]);
+}
+
+// Global Auth Check & Navbar Synchronizer
 async function checkAuth() {
     try {
         const res = await fetch('/api/auth/me');
@@ -9,57 +23,156 @@ async function checkAuth() {
         const volunteerLink = document.getElementById('volunteer-link');
         const dashboardLink = document.getElementById('dashboard-link');
 
-        if (data.loggedIn) {
-            // Hide login, show logout
+        if (data.loggedIn && data.user) {
+            // Logged in state
             if (navLogin) navLogin.style.display = 'none';
-            if (navLogout) navLogout.style.display = 'inline';
+            if (navLogout) navLogout.style.display = 'inline-flex';
 
-            // Name as clickable profile link -> EXTENSION APPLIED (.html)
+            // User Profile Link with Avatar & Role Badge
             if (navUser) {
-                navUser.innerHTML = '<a href="/profile.html" style="color:white; margin-left:20px;">👤 '
-                    + data.user.name + '</a>';
+                let roleBadgeHtml = '';
+                if (data.user.role === 'admin') {
+                    roleBadgeHtml = '<span class="nav-role-badge badge-admin">Admin</span>';
+                } else if (data.user.role === 'volunteer') {
+                    roleBadgeHtml = '<span class="nav-role-badge badge-volunteer">Volunteer</span>';
+                }
+
+                navUser.innerHTML = `
+                    <a href="/profile.html" class="nav-item nav-user-profile" title="View Profile">
+                        <span class="user-avatar-icon">👤</span>
+                        <span class="user-name-text">${escapeHtml(data.user.name)}</span>
+                        ${roleBadgeHtml}
+                    </a>
+                `;
             }
 
-            // Hide become a volunteer
-            if (volunteerLink) volunteerLink.innerHTML = '';
-
-            // Show correct dashboard links -> EXACT FILE PATHS FIXED WITH EXTENSIONS
-            if (dashboardLink) {
-                if (data.user.role === 'admin') {
-                    dashboardLink.innerHTML =
-                        '<a href="/volunteer-dashboard.html">Volunteer Panel</a>' +
-                        '<a href="/admin-dashboard.html" style="margin-left:20px;">Admin Panel</a>';
-                } else if (data.user.role === 'volunteer') {
-                    dashboardLink.innerHTML =
-                        '<a href="/volunteer-dashboard.html">Volunteer Panel</a>';
+            // Hide "Become a Volunteer" for volunteers and admins
+            if (volunteerLink) {
+                if (data.user.role === 'public') {
+                    volunteerLink.innerHTML = '<a href="/volunteer-apply.html" class="nav-item">Become a Volunteer</a>';
                 } else {
-                    dashboardLink.innerHTML = '';
+                    volunteerLink.innerHTML = '';
                 }
             }
 
-        } else {
-            // Not logged in
-            if (navLogin) navLogin.style.display = 'inline';
-            if (navLogout) navLogout.style.display = 'none';
-            if (navUser) navUser.innerHTML = '';
-
-            // Show become a volunteer -> EXTENSION APPLIED (.html)
-            if (volunteerLink) {
-                volunteerLink.innerHTML =
-                    '<a href="/volunteer-apply.html">Become a Volunteer</a>';
+            // Display role-specific dashboard panels without duplication
+            if (dashboardLink) {
+                let panelsHtml = '';
+                if (data.user.role === 'admin') {
+                    panelsHtml = `
+                        <a href="/volunteer-dashboard.html" class="nav-item nav-panel-btn">Volunteer Panel</a>
+                        <a href="/admin-dashboard.html" class="nav-item nav-panel-btn nav-admin-btn">Admin Panel</a>
+                    `;
+                } else if (data.user.role === 'volunteer') {
+                    panelsHtml = `
+                        <a href="/volunteer-dashboard.html" class="nav-item nav-panel-btn">Volunteer Panel</a>
+                    `;
+                } else {
+                    panelsHtml = '';
+                }
+                dashboardLink.innerHTML = panelsHtml;
             }
 
-            if (dashboardLink) dashboardLink.innerHTML = '';
+        } else {
+            // Visitor / Logged out state
+            if (navLogin) navLogin.style.display = 'inline-flex';
+            if (navLogout) navLogout.style.display = 'none';
+            if (navUser) navUser.innerHTML = '';
+            if (volunteerLink) {
+                volunteerLink.innerHTML = '<a href="/volunteer-apply.html" class="nav-item">Become a Volunteer</a>';
+            }
+            if (dashboardLink) {
+                dashboardLink.innerHTML = '';
+            }
         }
 
+        // Highlight active navbar link
+        highlightActiveNavLink();
+
     } catch (err) {
-        console.log('Auth check failed');
+        console.warn('Navbar auth verification failed:', err);
     }
 }
 
-async function logout() {
-    await fetch('/api/auth/logout', { method: 'POST' });
-    window.location.href = '/index.html'; // Redirect to main page explicitly
+// Highlight the currently active page in the navbar
+function highlightActiveNavLink() {
+    const currentPath = window.location.pathname.toLowerCase();
+    const navLinks = document.querySelectorAll('.nav-links a');
+
+    navLinks.forEach(link => {
+        link.classList.remove('active');
+        const href = (link.getAttribute('href') || '').toLowerCase();
+        
+        if (!href || href === '#') return;
+
+        // Exact match or matches filename without extension
+        if (
+            href === currentPath ||
+            (currentPath === '/' && (href === '/index.html' || href === '/')) ||
+            (currentPath === '/index' && href === '/index.html') ||
+            (currentPath === '/volunteer' && href === '/volunteer-dashboard.html') ||
+            (currentPath === '/admin' && href === '/admin-dashboard.html') ||
+            (currentPath === '/animals' && href === '/animals.html') ||
+            (currentPath === '/report' && href === '/report.html') ||
+            (currentPath === '/profile' && href === '/profile.html') ||
+            (currentPath === '/login' && href === '/login.html') ||
+            (currentPath === '/register' && href === '/register.html') ||
+            (currentPath.endsWith('.html') && href === currentPath)
+        ) {
+            link.classList.add('active');
+        }
+    });
 }
 
-checkAuth();
+// Initialize Mobile Hamburger Menu
+function initMobileNav() {
+    const navToggle = document.getElementById('nav-toggle');
+    const navLinks = document.getElementById('nav-links');
+
+    if (navToggle && navLinks) {
+        navToggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            navLinks.classList.toggle('open');
+            navToggle.classList.toggle('open');
+        });
+
+        // Close mobile drawer when clicking a link
+        navLinks.addEventListener('click', (e) => {
+            if (e.target.tagName === 'A' || e.target.closest('a')) {
+                navLinks.classList.remove('open');
+                navToggle.classList.remove('open');
+            }
+        });
+
+        // Close when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!navLinks.contains(e.target) && !navToggle.contains(e.target)) {
+                navLinks.classList.remove('open');
+                navToggle.classList.remove('open');
+            }
+        });
+    }
+}
+
+// Global Logout Handler
+async function logout(e) {
+    if (e && e.preventDefault) e.preventDefault();
+    try {
+        await fetch('/api/auth/logout', { method: 'POST' });
+    } catch (err) {
+        console.error('Logout error:', err);
+    } finally {
+        window.location.href = '/index.html';
+    }
+}
+
+// Run on page load
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+        initMobileNav();
+        checkAuth();
+    });
+} else {
+    initMobileNav();
+    checkAuth();
+}
