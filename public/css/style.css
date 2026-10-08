@@ -988,3 +988,37 @@ tr:last-child td {
         padding: 18px 16px;
     }
 }
+
+/* ============================================================
+   CARD & TAB CONSISTENCY
+   ============================================================ */
+.tab-content {
+    animation: fadeInTab 0.25s ease-in-out;
+}
+
+@keyframes fadeInTab {
+    from {
+        opacity: 0;
+        transform: translateY(4px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.home-pet-card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.home-pet-card .card-body {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.home-pet-card .card-body .btn {
+    margin-top: auto !important;
+}

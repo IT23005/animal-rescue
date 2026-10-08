@@ -23,21 +23,42 @@
       "src": "/css/(.*)",
       "dest": "/public/css/$1",
       "headers": {
-        "cache-control": "public, max-age=0, must-revalidate"
+        "cache-control": "no-cache, no-store, must-revalidate"
+      }
+    },
+    {
+      "src": "/public/css/(.*)",
+      "dest": "/public/css/$1",
+      "headers": {
+        "cache-control": "no-cache, no-store, must-revalidate"
+      }
+    },
+    {
+      "src": "/style.css",
+      "dest": "/public/css/style.css",
+      "headers": {
+        "cache-control": "no-cache, no-store, must-revalidate"
       }
     },
     {
       "src": "/js/(.*)",
       "dest": "/public/js/$1",
       "headers": {
-        "cache-control": "public, max-age=31536000, immutable"
+        "cache-control": "no-cache, no-store, must-revalidate"
+      }
+    },
+    {
+      "src": "/public/js/(.*)",
+      "dest": "/public/js/$1",
+      "headers": {
+        "cache-control": "no-cache, no-store, must-revalidate"
       }
     },
     {
       "src": "/images/(.*)",
       "dest": "/public/images/$1",
       "headers": {
-        "cache-control": "public, max-age=31536000, immutable"
+        "cache-control": "public, max-age=86400, stale-while-revalidate=604800"
       }
     },
     {
@@ -50,99 +71,171 @@
     },
     {
       "src": "/",
-      "dest": "/views/index.html"
+      "dest": "/views/index.html",
+      "headers": {
+        "cache-control": "no-cache, no-store, must-revalidate"
+      }
     },
     {
       "src": "/index",
-      "dest": "/views/index.html"
+      "dest": "/views/index.html",
+      "headers": {
+        "cache-control": "no-cache, no-store, must-revalidate"
+      }
     },
     {
       "src": "/index.html",
-      "dest": "/views/index.html"
+      "dest": "/views/index.html",
+      "headers": {
+        "cache-control": "no-cache, no-store, must-revalidate"
+      }
     },
     {
       "src": "/login",
-      "dest": "/views/login.html"
+      "dest": "/views/login.html",
+      "headers": {
+        "cache-control": "no-cache, no-store, must-revalidate"
+      }
     },
     {
       "src": "/login.html",
-      "dest": "/views/login.html"
+      "dest": "/views/login.html",
+      "headers": {
+        "cache-control": "no-cache, no-store, must-revalidate"
+      }
     },
     {
       "src": "/register",
-      "dest": "/views/register.html"
+      "dest": "/views/register.html",
+      "headers": {
+        "cache-control": "no-cache, no-store, must-revalidate"
+      }
     },
     {
       "src": "/register.html",
-      "dest": "/views/register.html"
+      "dest": "/views/register.html",
+      "headers": {
+        "cache-control": "no-cache, no-store, must-revalidate"
+      }
     },
     {
       "src": "/animals",
-      "dest": "/views/animals.html"
+      "dest": "/views/animals.html",
+      "headers": {
+        "cache-control": "no-cache, no-store, must-revalidate"
+      }
     },
     {
       "src": "/animals.html",
-      "dest": "/views/animals.html"
+      "dest": "/views/animals.html",
+      "headers": {
+        "cache-control": "no-cache, no-store, must-revalidate"
+      }
     },
     {
       "src": "/report",
-      "dest": "/views/report.html"
+      "dest": "/views/report.html",
+      "headers": {
+        "cache-control": "no-cache, no-store, must-revalidate"
+      }
     },
     {
       "src": "/report.html",
-      "dest": "/views/report.html"
+      "dest": "/views/report.html",
+      "headers": {
+        "cache-control": "no-cache, no-store, must-revalidate"
+      }
     },
     {
       "src": "/apply",
-      "dest": "/views/apply.html"
+      "dest": "/views/apply.html",
+      "headers": {
+        "cache-control": "no-cache, no-store, must-revalidate"
+      }
     },
     {
       "src": "/apply.html",
-      "dest": "/views/apply.html"
+      "dest": "/views/apply.html",
+      "headers": {
+        "cache-control": "no-cache, no-store, must-revalidate"
+      }
     },
     {
       "src": "/profile",
-      "dest": "/views/profile.html"
+      "dest": "/views/profile.html",
+      "headers": {
+        "cache-control": "no-cache, no-store, must-revalidate"
+      }
     },
     {
       "src": "/profile.html",
-      "dest": "/views/profile.html"
+      "dest": "/views/profile.html",
+      "headers": {
+        "cache-control": "no-cache, no-store, must-revalidate"
+      }
     },
     {
       "src": "/volunteer-apply",
-      "dest": "/views/volunteer-apply.html"
+      "dest": "/views/volunteer-apply.html",
+      "headers": {
+        "cache-control": "no-cache, no-store, must-revalidate"
+      }
     },
     {
       "src": "/volunteer-apply.html",
-      "dest": "/views/volunteer-apply.html"
+      "dest": "/views/volunteer-apply.html",
+      "headers": {
+        "cache-control": "no-cache, no-store, must-revalidate"
+      }
     },
     {
       "src": "/volunteer",
-      "dest": "/views/volunteer-dashboard.html"
+      "dest": "/views/volunteer-dashboard.html",
+      "headers": {
+        "cache-control": "no-cache, no-store, must-revalidate"
+      }
     },
     {
       "src": "/volunteer-dashboard",
-      "dest": "/views/volunteer-dashboard.html"
+      "dest": "/views/volunteer-dashboard.html",
+      "headers": {
+        "cache-control": "no-cache, no-store, must-revalidate"
+      }
     },
     {
       "src": "/volunteer-dashboard.html",
-      "dest": "/views/volunteer-dashboard.html"
+      "dest": "/views/volunteer-dashboard.html",
+      "headers": {
+        "cache-control": "no-cache, no-store, must-revalidate"
+      }
     },
     {
       "src": "/admin",
-      "dest": "/views/admin-dashboard.html"
+      "dest": "/views/admin-dashboard.html",
+      "headers": {
+        "cache-control": "no-cache, no-store, must-revalidate"
+      }
     },
     {
       "src": "/admin-dashboard",
-      "dest": "/views/admin-dashboard.html"
+      "dest": "/views/admin-dashboard.html",
+      "headers": {
+        "cache-control": "no-cache, no-store, must-revalidate"
+      }
     },
     {
       "src": "/admin-dashboard.html",
-      "dest": "/views/admin-dashboard.html"
+      "dest": "/views/admin-dashboard.html",
+      "headers": {
+        "cache-control": "no-cache, no-store, must-revalidate"
+      }
     },
     {
       "src": "/(.*).html",
-      "dest": "/views/$1.html"
+      "dest": "/views/$1.html",
+      "headers": {
+        "cache-control": "no-cache, no-store, must-revalidate"
+      }
     },
     {
       "src": "/(.*)",
