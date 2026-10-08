@@ -1,4 +1,4 @@
-# 🐾 Animal Rescue & Shelter Management System
+# Animal Rescue & Shelter Management System
 
 [![Node.js Version](https://img.shields.io/badge/Node.js-18.x%20%7C%2020.x-339933?logo=node.js&logoColor=white)](https://nodejs.org/)
 [![Express.js](https://img.shields.io/badge/Express-4.18.2-000000?logo=express&logoColor=white)](https://expressjs.com/)
@@ -10,7 +10,7 @@
 
 ---
 
-## 📌 Table of Contents
+## Table of Contents
 - [Project Overview](#-project-overview)
 - [System Architecture](#-system-architecture)
 - [Key Features & Modules](#-key-features--modules)
@@ -26,7 +26,7 @@
 
 ---
 
-## 📖 Project Overview
+## Project Overview
 
 ### Problem Statement
 Stray and injured animals in urban environments often suffer from delayed medical attention due to decentralized reporting mechanisms. Furthermore, shelter operations frequently face bottlenecks in coordinating rescue efforts, managing adoption applications, keeping transparent veterinary logs, and vetting volunteers.
@@ -40,7 +40,7 @@ The **Animal Rescue & Shelter Management System** is an end-to-end web platform 
 
 ---
 
-## 🏛️ System Architecture
+## System Architecture
 
 The application adopts a modular **MVC (Model-View-Controller)** pattern with a decoupled client-server interface, optimized for **serverless environments (Vercel)** using MongoDB Atlas connection pooling and session persistence.
 
@@ -74,52 +74,52 @@ flowchart TD
 
 ---
 
-## 🚀 Key Features & Modules
+## Key Features & Modules
 
-### 1. 🚨 Stray Animal Rescue Reporting
+### 1. Stray Animal Rescue Reporting
 - Public-facing emergency reporting form requiring location, animal species, incident description, and photo evidence.
 - Multi-stage status lifecycle: `reported` ➔ `in-progress` ➔ `rescued` ➔ `closed`.
 - Internal dispatcher notes and volunteer assignment tracking.
 
-### 2. 🐕 Adoption & Foster Pipeline
+### 2. Adoption & Foster Pipeline
 - Filterable animal catalog with real-time query parameters (species, health status, availability).
 - Comprehensive adoption/foster screening form capturing applicant home type, experience, and pet compatibility.
 - Application status workflow: `pending` ➔ `approved` ➔ `rejected` with reviewer audit logs.
 
-### 3. 🩺 Veterinary & Medical Care Journaling
+### 3. Veterinary & Medical Care Journaling
 - Detailed timeline logs associated with individual animal profiles.
 - Records treatment procedures, diagnoses, medication notes, and attending volunteer identity.
 
-### 4. 👥 Volunteer Onboarding & Management
+### 4. Volunteer Onboarding & Management
 - Public volunteer application portal collecting experience, motivation, and contact details.
 - One-click administrator approval with automated account generation and role elevation.
 
-### 5. 🛡️ Authentication & Session Security
+### 5. Authentication & Session Security
 - Cryptographic password hashing using `bcryptjs` (salt factor 10).
 - Persistent serverless sessions backed by MongoDB (`connect-mongo`) with `HttpOnly` and `SameSite` protections.
 - Secret code verification layer for administrative access.
 
 ---
 
-## 🔐 User Roles & Permissions (RBAC)
+## User Roles & Permissions (RBAC)
 
 | Capability / Module | Public Visitor | Registered User | Volunteer | Administrator |
 | :--- | :---: | :---: | :---: | :---: |
-| Browse Animals & Search/Filter | ✅ | ✅ | ✅ | ✅ |
-| Submit Incident Rescue Report | ✅ | ✅ | ✅ | ✅ |
-| Submit Adoption / Foster Request | ✅ | ✅ | ✅ | ✅ |
-| Apply to Become a Volunteer | ✅ | ✅ | — | — |
-| Manage Personal Profile & Password | ❌ | ✅ | ✅ | ✅ |
-| View Incident Reports & Dispatch Feed | ❌ | ❌ | ✅ | ✅ |
-| Update Rescue Status & Internal Notes | ❌ | ❌ | ✅ | ✅ |
-| Add Animals & Record Medical Logs | ❌ | ❌ | ✅ | ✅ |
-| Review Adoption & Foster Applications | ❌ | ❌ | ✅ | ✅ |
-| Review & Approve Volunteer Applicants | ❌ | ❌ | ❌ | ✅ |
-| Manage User Roles & Delete Animal Records | ❌ | ❌ | ❌ | ✅ |
+| Browse Animals & Search/Filter | ✔️ | ✔️ | ✔️ | ✔️ |
+| Submit Incident Rescue Report | ✔️ | ✔️ | ✔️ | ✔️ |
+| Submit Adoption / Foster Request | ✔️ | ✔️ | ✔️ | ✔️ |
+| Apply to Become a Volunteer | ✔️ | ✔️ | — | — |
+| Manage Personal Profile & Password | ❌ | ✔️ | ✔️ | ✔️ |
+| View Incident Reports & Dispatch Feed | ❌ | ❌ | ✔️ | ✔️ |
+| Update Rescue Status & Internal Notes | ❌ | ❌ | ✔️ | ✔️ |
+| Add Animals & Record Medical Logs | ❌ | ❌ | ✔️ | ✔️ |
+| Review Adoption & Foster Applications | ❌ | ❌ | ✔️ | ✔️ |
+| Review & Approve Volunteer Applicants | ❌ | ❌ | ❌ | ✔️ |
+| Manage User Roles & Delete Animal Records | ❌ | ❌ | ❌ | ✔️ |
 
 ---
 
-## 🗄️ Database Design & Data Models
+## Database Design & Data Models
 
 The system leverages **MongoDB** via the **Mongoose ODM**. The schema architecture is organized across five collections:
 
@@ -202,7 +202,7 @@ erDiagram
 
 ---
 
-## 📡 REST API Reference
+## REST API Reference
 
 ### Authentication & Users (`/api/auth`)
 | Method | Endpoint | Access | Description |
@@ -249,7 +249,7 @@ erDiagram
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 - **Runtime & Backend**: [Node.js](https://nodejs.org/), [Express.js](https://expressjs.com/)
 - **Database & ODM**: [MongoDB Atlas](https://www.mongodb.com/atlas), [Mongoose 7.x](https://mongoosejs.com/)
@@ -261,7 +261,7 @@ erDiagram
 
 ---
 
-## 📁 Directory Structure
+## Directory Structure
 
 ```text
 animal-rescue/
@@ -306,7 +306,7 @@ animal-rescue/
 
 ---
 
-## 💻 Local Installation & Setup
+## Local Installation & Setup
 
 ### Prerequisites
 - [Node.js](https://nodejs.org/) (v18.0.0 or higher recommended)
@@ -363,7 +363,7 @@ Open your browser and navigate to: **`http://localhost:3000`**
 
 ---
 
-## ☁️ Production Deployment (Vercel)
+## Production Deployment (Vercel)
 
 This project is built to deploy out-of-the-box on **Vercel**:
 
@@ -381,7 +381,7 @@ This project is built to deploy out-of-the-box on **Vercel**:
 
 ---
 
-## 🎓 Academic Assessment Information
+## Academic Assessment Information
 
 - **Course**: Web Application Development Lab
 - **Project Title**: Animal Rescue & Shelter Management System
