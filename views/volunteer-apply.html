@@ -9,13 +9,13 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/css/style.css?v=20261008-nav">
+    <link rel="stylesheet" href="/css/style.css?v=20261009-minimal">
 </head>
 
 <body>
 
     <nav class="navbar">
-        <div class="nav-brand"><a href="/index.html">🐾 Animal Rescue</a></div>
+        <div class="nav-brand"><a href="/index.html">Animal Rescue</a></div>
         <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation">
             <span></span>
             <span></span>
@@ -35,7 +35,7 @@
 
 
     <div class="page-header">
-        <h1>🤝 Become a Volunteer</h1>
+        <h1>Become a Volunteer</h1>
         <p>Join our team and help save animals</p>
     </div>
 
@@ -85,10 +85,10 @@
     </div>
 
     <footer class="footer">
-        <p>🐾 Animal Rescue & Adoption Portal</p>
+        <p>Animal Rescue & Adoption Portal</p>
     </footer>
 
-    <script src="/js/main.js?v=20261008-nav"></script>
+    <script src="/js/main.js?v=20261009-minimal"></script>
     <script>
         document.getElementById('volunteer-form').addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -113,18 +113,18 @@
 
                 if (res.ok) {
                     msgDiv.className = 'message success';
-                    msgDiv.textContent = '✅ Application submitted! We will contact you soon.';
+                    msgDiv.textContent = 'Application submitted. We will contact you soon.';
                     msgDiv.style.display = 'block';
                     document.getElementById('volunteer-form').style.display = 'none';
                     window.scrollTo(0, 0);
                 } else {
                     msgDiv.className = 'message error';
-                    msgDiv.textContent = '❌ ' + result.message;
+                    msgDiv.textContent = result.message;
                     msgDiv.style.display = 'block';
                 }
             } catch (err) {
                 msgDiv.className = 'message error';
-                msgDiv.textContent = '❌ Something went wrong.';
+                msgDiv.textContent = 'Something went wrong.';
                 msgDiv.style.display = 'block';
             }
         });

@@ -10,7 +10,7 @@ const app = express();
 // Enable trust proxy for Vercel / reverse proxies
 app.set('trust proxy', 1);
 
-// 🛡️ Basic Security Headers Middleware
+// Basic Security Headers Middleware
 app.use((req, res, next) => {
     res.setHeader('X-Content-Type-Options', 'nosniff');
     res.setHeader('X-Frame-Options', 'SAMEORIGIN');
@@ -19,7 +19,7 @@ app.use((req, res, next) => {
     next();
 });
 
-// ⚡ Serverless-Optimized MongoDB Connection Handler with Cached Promise
+// Serverless-Optimized MongoDB Connection Handler with Cached Promise
 let cachedDbPromise = null;
 async function connectDB() {
     if (mongoose.connection.readyState >= 1) {
@@ -30,11 +30,11 @@ async function connectDB() {
             serverSelectionTimeoutMS: 5000,
             maxPoolSize: 10
         }).then(m => {
-            console.log('✅ MongoDB Connected Successfully');
+            console.log('MongoDB Connected Successfully');
             return m;
         }).catch(err => {
             cachedDbPromise = null;
-            console.error('❌ MongoDB Connection Error:', err.message);
+            console.error('MongoDB Connection Error:', err.message);
             throw err;
         });
     }
@@ -63,7 +63,7 @@ app.use(async (req, res, next) => {
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-// 🌐 STATIC FILE SERVING MIDDLEWARES
+// STATIC FILE SERVING MIDDLEWARES
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use(express.static(path.join(__dirname, 'views')));
@@ -87,7 +87,7 @@ app.use(session({
     }
 }));
 
-// 🏥 Health Check & Monitoring Endpoint
+// Health Check & Monitoring Endpoint
 app.get('/api/health', (req, res) => {
     const isDbConnected = mongoose.connection.readyState === 1;
     res.status(isDbConnected ? 200 : 503).json({
@@ -98,7 +98,7 @@ app.get('/api/health', (req, res) => {
     });
 });
 
-// 📑 EXPRESS HTML ROUTING MATRIX (Handles both /route and /route.html)
+// EXPRESS HTML ROUTING MATRIX (Handles both /route and /route.html)
 const serveHTML = (filename) => (req, res) => {
     res.sendFile(path.join(__dirname, 'views', filename));
 };
@@ -134,7 +134,7 @@ app.get('/admin', serveHTML('admin-dashboard.html'));
 app.get('/admin-dashboard', serveHTML('admin-dashboard.html'));
 app.get('/admin-dashboard.html', serveHTML('admin-dashboard.html'));
 
-// ⚡ REST API INTERACTION ROUTES
+// REST API INTERACTION ROUTES
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/animals', require('./routes/animals'));
 app.use('/api/applications', require('./routes/applications'));
@@ -145,7 +145,7 @@ app.use('/api/*', (req, res) => {
     res.status(404).json({ message: `API endpoint '${req.originalUrl}' not found.` });
 });
 
-// 🛑 Global Error Handler (Handles Multer and Unhandled Exceptions cleanly)
+// Global Error Handler (Handles Multer and Unhandled Exceptions cleanly)
 app.use((err, req, res, next) => {
     console.error('Unhandled Application Error:', err);
     if (err.name === 'MulterError') {
@@ -162,11 +162,11 @@ app.use((err, req, res, next) => {
     });
 });
 
-// 🚀 RUN ENGINE CAPABILITIES (Only listen if run directly, not in Vercel Serverless)
+// RUN ENGINE CAPABILITIES (Only listen if run directly, not in Vercel Serverless)
 if (require.main === module) {
     const PORT = process.env.PORT || 3000;
     app.listen(PORT, () => {
-        console.log(`🚀 Server running on http://localhost:${PORT}`);
+        console.log(`Server running on http://localhost:${PORT}`);
     });
 }
 

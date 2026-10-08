@@ -9,13 +9,13 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/css/style.css?v=20261008-nav">
+    <link rel="stylesheet" href="/css/style.css?v=20261009-minimal">
 </head>
 
 <body>
 
     <nav class="navbar">
-        <div class="nav-brand"><a href="/index.html">🐾 Animal Rescue</a></div>
+        <div class="nav-brand"><a href="/index.html">Animal Rescue</a></div>
         <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation">
             <span></span>
             <span></span>
@@ -35,7 +35,7 @@
 
 
     <div class="page-header">
-        <h1>❤️ Adoption / Foster Application</h1>
+        <h1>Adoption / Foster Application</h1>
         <p>Give an animal a loving home — no login required</p>
     </div>
 
@@ -54,7 +54,7 @@
                 <input type="hidden" id="animalNameHidden">
 
                 <h3 style="color:#2c7a4b; margin-bottom:15px;">
-                    👤 Your Information
+                    Your Information
                 </h3>
 
                 <div class="form-group">
@@ -75,7 +75,7 @@
                 </div>
 
                 <h3 style="color:#2c7a4b; margin-bottom:15px; margin-top:25px;">
-                    📋 Application Details
+                    Application Details
                 </h3>
 
                 <div class="form-group">
@@ -119,10 +119,10 @@
     </div>
 
     <footer class="footer">
-        <p>🐾 Animal Rescue & Adoption Portal</p>
+        <p>Animal Rescue & Adoption Portal</p>
     </footer>
 
-    <script src="/js/main.js?v=20261008-nav"></script>
+    <script src="/js/main.js?v=20261009-minimal"></script>
     <script>
         const params = new URLSearchParams(window.location.search);
         const animalId = params.get('animalId');
@@ -131,7 +131,7 @@
         if (animalId) {
             document.getElementById('animalId').value = animalId;
             document.getElementById('animalNameHidden').value = animalName;
-            document.getElementById('animal-name').textContent = '🐾 Applying for: ' + animalName;
+            document.getElementById('animal-name').textContent = 'Applying for: ' + animalName;
         } else {
             window.location.href = '/animals';
         }
@@ -164,18 +164,18 @@
 
                 if (res.ok) {
                     msgDiv.className = 'message success';
-                    msgDiv.textContent = '✅ Application submitted! We will review it shortly.';
+                    msgDiv.textContent = 'Application submitted successfully. We will review it shortly.';
                     msgDiv.style.display = 'block';
                     document.getElementById('apply-form').style.display = 'none';
                     window.scrollTo(0, 0);
                 } else {
                     msgDiv.className = 'message error';
-                    msgDiv.textContent = '❌ ' + result.message;
+                    msgDiv.textContent = result.message;
                     msgDiv.style.display = 'block';
                 }
             } catch (err) {
                 msgDiv.className = 'message error';
-                msgDiv.textContent = '❌ Something went wrong.';
+                msgDiv.textContent = 'Something went wrong. Please try again.';
                 msgDiv.style.display = 'block';
             }
         });

@@ -8,12 +8,12 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/css/style.css?v=20261008-nav">
+    <link rel="stylesheet" href="/css/style.css?v=20261009-minimal">
 </head>
 <body>
 
     <nav class="navbar">
-        <div class="nav-brand"><a href="/index.html">🐾 Animal Rescue</a></div>
+        <div class="nav-brand"><a href="/index.html">Animal Rescue</a></div>
         <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation">
             <span></span>
             <span></span>
@@ -73,7 +73,7 @@
     </div>
 
     <footer class="footer">
-        <p>🐾 Animal Rescue & Adoption Portal</p>
+        <p>Animal Rescue & Adoption Portal</p>
     </footer>
 
     <script>
@@ -103,10 +103,9 @@
 
                 if (res.ok) {
                     msgDiv.className = 'message success';
-                    msgDiv.textContent = '✅ Login successful! Redirecting...';
+                    msgDiv.textContent = 'Login successful. Redirecting...';
                     msgDiv.style.display = 'block';
 
-                    // ⚡ Vercel এবং ফাইল আর্কিটেকচার অনুযায়ী এক্সপ্লিসিট রিডাইরেকশন পাথ ফিক্স
                     setTimeout(() => {
                         if (result.user && result.user.role === 'admin') {
                             window.location.href = '/admin-dashboard.html';
@@ -118,16 +117,16 @@
                     }, 1500);
                 } else {
                     msgDiv.className = 'message error';
-                    msgDiv.textContent = '❌ ' + result.message;
+                    msgDiv.textContent = result.message;
                     msgDiv.style.display = 'block';
                 }
             } catch (err) {
                 msgDiv.className = 'message error';
-                msgDiv.textContent = '❌ Something went wrong.';
+                msgDiv.textContent = 'Something went wrong.';
                 msgDiv.style.display = 'block';
             }
         });
     </script>
-    <script src="/js/main.js?v=20261008-nav"></script>
+    <script src="/js/main.js?v=20261009-minimal"></script>
 </body>
 </html>

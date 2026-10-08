@@ -39,7 +39,6 @@ async function checkAuth() {
 
                 navUser.innerHTML = `
                     <a href="/profile.html" class="nav-item nav-user-profile" title="View Profile">
-                        <span class="user-avatar-icon">👤</span>
                         <span class="user-name-text">${escapeHtml(data.user.name)}</span>
                         ${roleBadgeHtml}
                     </a>

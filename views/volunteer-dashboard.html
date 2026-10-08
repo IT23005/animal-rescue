@@ -9,13 +9,13 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/css/style.css?v=20261009-reports">
+    <link rel="stylesheet" href="/css/style.css?v=20261009-minimal">
 </head>
 
 <body>
 
     <nav class="navbar">
-        <div class="nav-brand"><a href="/index.html">🐾 Animal Rescue</a></div>
+        <div class="nav-brand"><a href="/index.html">Animal Rescue</a></div>
         <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation">
             <span></span>
             <span></span>
@@ -34,7 +34,7 @@
     </nav>
 
     <div class="page-header">
-        <h1>🤝 Volunteer Dashboard</h1>
+        <h1>Volunteer Dashboard</h1>
         <p>Review applications, respond to stray reports, and update animal health logs</p>
     </div>
 
@@ -62,16 +62,16 @@
 
         <!-- TABS -->
         <div class="tab-bar">
-            <button class="tab-btn active" onclick="showTab('applications')">📋 Adoption Apps</button>
-            <button class="tab-btn" onclick="showTab('reports')">📍 Stray Reports</button>
-            <button class="tab-btn" onclick="showTab('add-animal')">➕ Add Animal</button>
-            <button class="tab-btn" onclick="showTab('medical')">💉 Medical Logs</button>
+            <button class="tab-btn active" onclick="showTab('applications')">Adoption Apps</button>
+            <button class="tab-btn" onclick="showTab('reports')">Stray Reports</button>
+            <button class="tab-btn" onclick="showTab('add-animal')">Add Animal</button>
+            <button class="tab-btn" onclick="showTab('medical')">Medical Logs</button>
         </div>
 
         <!-- APPLICATIONS TAB -->
         <div id="tab-applications" class="tab-content">
             <div class="table-container">
-                <h3>📋 Adoption & Foster Applications</h3>
+                <h3>Adoption & Foster Applications</h3>
                 <div style="overflow-x:auto;">
                     <table>
                         <thead>
@@ -101,7 +101,7 @@
             <div class="reports-section-header">
                 <div>
                     <h2 style="font-size:22px; font-weight:700; color:#1e293b; display:flex; align-items:center; gap:10px;">
-                        <span>📍 Public Stray Reports</span>
+                        <span>Community Stray Reports</span>
                         <span id="reports-count-pill" class="reports-count-pill">0 Reports</span>
                     </h2>
                     <p style="color:#64748b; font-size:14px; margin-top:3px;">
@@ -109,28 +109,27 @@
                     </p>
                 </div>
                 <button class="btn btn-secondary" onclick="loadReports()" style="display:inline-flex; align-items:center; gap:6px; font-size:13px; padding:8px 16px;">
-                    🔄 Refresh Reports
+                    Refresh Reports
                 </button>
             </div>
 
             <!-- FILTERS & SEARCH TOOLBAR -->
             <div class="reports-toolbar">
                 <div class="reports-search-box">
-                    <span class="reports-search-icon">🔍</span>
                     <input type="text" id="report-search-input" placeholder="Search by location, reporter, or description..." oninput="filterReports()">
                 </div>
                 <div class="reports-filters-group">
                     <button class="report-filter-btn active" data-status="all" onclick="setReportStatusFilter('all')">All Reports</button>
-                    <button class="report-filter-btn" data-status="pending" onclick="setReportStatusFilter('pending')">⚠️ Pending</button>
-                    <button class="report-filter-btn" data-status="reviewed" onclick="setReportStatusFilter('reviewed')">👀 Reviewed</button>
-                    <button class="report-filter-btn" data-status="resolved" onclick="setReportStatusFilter('resolved')">✅ Resolved</button>
+                    <button class="report-filter-btn" data-status="pending" onclick="setReportStatusFilter('pending')">Pending</button>
+                    <button class="report-filter-btn" data-status="reviewed" onclick="setReportStatusFilter('reviewed')">Reviewed</button>
+                    <button class="report-filter-btn" data-status="resolved" onclick="setReportStatusFilter('resolved')">Resolved</button>
 
                     <select id="report-species-filter" class="reports-filter-select" onchange="filterReports()">
                         <option value="all">All Species</option>
-                        <option value="dog">🐕 Dogs</option>
-                        <option value="cat">🐈 Cats</option>
-                        <option value="bird">🐦 Birds</option>
-                        <option value="other">🐾 Other</option>
+                        <option value="dog">Dogs</option>
+                        <option value="cat">Cats</option>
+                        <option value="bird">Birds</option>
+                        <option value="other">Other</option>
                     </select>
                 </div>
             </div>
@@ -146,7 +145,7 @@
         <!-- ADD ANIMAL TAB -->
         <div id="tab-add-animal" class="tab-content" style="display:none;">
             <div class="table-container">
-                <h3>➕ Add Rescued Animal</h3>
+                <h3>Add Rescued Animal</h3>
                 <div style="padding:25px;">
                     <div id="add-message" class="message" style="display:none;"></div>
                     <form id="add-animal-form" enctype="multipart/form-data">
@@ -206,7 +205,7 @@
         <!-- MEDICAL LOGS TAB -->
         <div id="tab-medical" class="tab-content" style="display:none;">
             <div class="table-container">
-                <h3>💉 Record Medical Log</h3>
+                <h3>Record Medical Log</h3>
                 <div style="padding:25px;">
                     <div id="med-message" class="message" style="display:none;"></div>
                     <div class="form-group">
@@ -239,8 +238,8 @@
                 style="width:100%; padding:10px; border:1.5px solid #d5ded8; border-radius:8px;"></textarea>
         </div>
         <div style="display:flex; gap:12px; margin-top:20px;">
-            <button class="btn btn-primary" onclick="submitReview('approved')">✅ Approve Application</button>
-            <button class="btn btn-danger" onclick="submitReview('rejected')">❌ Reject Application</button>
+            <button class="btn btn-primary" onclick="submitReview('approved')">Approve Application</button>
+            <button class="btn btn-danger" onclick="submitReview('rejected')">Reject Application</button>
         </div>
     </div>
     <div id="review-overlay" class="modal-overlay" style="display:none;" onclick="closeReviewModal()"></div>
@@ -262,10 +261,10 @@
     </div>
 
     <footer class="footer">
-        <p>🐾 Animal Rescue & Adoption Portal | Helping animals find homes</p>
+        <p>Animal Rescue & Adoption Portal | Helping animals find homes</p>
     </footer>
 
-    <script src="/js/main.js?v=20261009-reports"></script>
+    <script src="/js/main.js?v=20261009-minimal"></script>
     <script>
         let allApplications = [];
         let allReports = [];
@@ -330,7 +329,7 @@
                 tbody.innerHTML = allApplications.map(app => {
                     const petName = app.animal?.name || app.animalName || 'Rescue Animal';
                     const petSpecies = app.animal?.species ? `(${app.animal.species})` : '';
-                    const contact = `📞 ${app.applicantPhone || 'N/A'}${app.applicantEmail ? `<br><small>${app.applicantEmail}</small>` : ''}<br><small>📍 ${app.applicantAddress || 'N/A'}</small>`;
+                    const contact = `Phone: ${app.applicantPhone || 'N/A'}${app.applicantEmail ? `<br><small>${app.applicantEmail}</small>` : ''}<br><small>Address: ${app.applicantAddress || 'N/A'}</small>`;
 
                     return `
                         <tr>
@@ -356,7 +355,7 @@
                                     </button>
                                 ` : `
                                     <span style="color:#777; font-size:13px; font-weight:600;">
-                                        ${app.status === 'approved' ? '✅ Approved' : '❌ Rejected'}
+                                        ${app.status === 'approved' ? 'Approved' : 'Rejected'}
                                     </span>
                                 `}
                             </td>
@@ -387,10 +386,10 @@
 
         function getSpeciesEmoji(species) {
             switch ((species || '').toLowerCase()) {
-                case 'dog': return '🐕 Dog';
-                case 'cat': return '🐈 Cat';
-                case 'bird': return '🐦 Bird';
-                default: return '🐾 Other';
+                case 'dog': return 'Dog';
+                case 'cat': return 'Cat';
+                case 'bird': return 'Bird';
+                default: return 'Other';
             }
         }
 
@@ -403,7 +402,7 @@
                 renderReports();
             } catch (err) {
                 if (feed) {
-                    feed.innerHTML = '<div style="text-align:center; padding:40px; background:white; border-radius:12px; color:#ef4444;">❌ Failed to load stray reports. Please refresh.</div>';
+                    feed.innerHTML = '<div style="text-align:center; padding:40px; background:white; border-radius:12px; color:#ef4444;">Failed to load stray reports. Please refresh.</div>';
                 }
             }
         }
@@ -459,7 +458,6 @@
             if (!filtered || filtered.length === 0) {
                 feed.innerHTML = `
                     <div style="text-align:center; padding:60px 20px; background:white; border-radius:16px; border:1px solid #e2e8f0; color:#64748b;">
-                        <div style="font-size:42px; margin-bottom:12px;">🐾</div>
                         <h3 style="font-size:18px; color:#1e293b; margin-bottom:6px;">No Stray Reports Match Your Criteria</h3>
                         <p style="font-size:14px; max-width:400px; margin:0 auto;">Try clearing search keywords or switching status filters above to view other reported incidents.</p>
                     </div>
@@ -480,27 +478,26 @@
 
                 // Status configuration
                 let statusBadgeClass = 'report-status-pending';
-                let statusIconText = '⚠️ Pending Attention';
+                let statusIconText = 'Pending Attention';
                 if (r.status === 'reviewed') {
                     statusBadgeClass = 'report-status-reviewed';
-                    statusIconText = '👀 Under Review';
+                    statusIconText = 'Under Review';
                 } else if (r.status === 'resolved') {
                     statusBadgeClass = 'report-status-resolved';
-                    statusIconText = '✅ Rescued & Resolved';
+                    statusIconText = 'Rescued & Resolved';
                 }
 
                 // Media Showcase
                 const mediaHtml = r.image ? `
                     <div class="report-media" onclick="openLightbox('${r.image}', '${safeSpecies} Incident', 'Reported in ${safeLocation} by ${safeReporter}')">
                         <img src="${r.image}" class="report-media-img" alt="Stray Animal Photo">
-                        <span class="report-media-badge">📷 Verified Photo</span>
+                        <span class="report-media-badge">Verified Photo</span>
                         <div class="report-media-overlay">
-                            <span>🔍 Click to View Full Photo</span>
+                            <span>Click to Enlarge</span>
                         </div>
                     </div>
                 ` : `
                     <div class="report-no-photo">
-                        <span class="report-no-photo-icon">🐾</span>
                         <strong style="font-size:13px; color:#64748b;">No Photo Uploaded</strong>
                         <span style="font-size:11.5px; color:#94a3b8;">Location & description available</span>
                     </div>
@@ -524,11 +521,10 @@
                             <!-- Location & Maps Link -->
                             <div class="report-location-row">
                                 <div class="report-location-title">
-                                    <span>📍</span>
                                     <span>${safeLocation}</span>
                                 </div>
                                 <a href="${mapsUrl}" target="_blank" rel="noopener noreferrer" class="report-maps-link">
-                                    🗺️ Search on Google Maps
+                                    Google Maps
                                 </a>
                             </div>
 
@@ -541,11 +537,11 @@
                             <!-- Reporter Contact Strip -->
                             <div class="report-contact-grid">
                                 <div class="report-contact-item">
-                                    <span class="label">👤 Reported By</span>
+                                    <span class="label">Reported By</span>
                                     <span class="val">${safeReporter}</span>
                                 </div>
                                 <div class="report-contact-item">
-                                    <span class="label">📞 Contact Phone</span>
+                                    <span class="label">Contact Phone</span>
                                     <span class="val">
                                         <a href="tel:${safePhone}" class="report-phone-link">
                                             ${safePhone} (Call)
@@ -553,7 +549,7 @@
                                     </span>
                                 </div>
                                 <div class="report-contact-item">
-                                    <span class="label">🏠 Reporter Address</span>
+                                    <span class="label">Reporter Address</span>
                                     <span class="val">${safeAddress}</span>
                                 </div>
                             </div>
@@ -562,7 +558,7 @@
                             ${(r.status !== 'pending' || safeNote) ? `
                                 <div class="report-dispatch-box ${r.status === 'reviewed' ? 'is-reviewed' : ''}">
                                     <div class="report-dispatch-header">
-                                        <span>📝 Rescue Coordination & Notes:</span>
+                                        <span>Rescue Coordination & Notes:</span>
                                         ${r.reviewerName ? `<small>Handled by: <strong>${safeReviewer}</strong></small>` : ''}
                                     </div>
                                     <div>${safeNote ? safeNote : '<em>Status updated without internal notes.</em>'}</div>
@@ -575,38 +571,38 @@
                                     ${r.status === 'pending' ? `
                                         <button class="btn btn-secondary" style="padding:7px 14px; font-size:13px;"
                                                 onclick="updateReportStatus('${r._id}', 'reviewed', '${safeNote.replace(/'/g, "\\'")}')">
-                                            👀 Mark Under Review
+                                            Mark Under Review
                                         </button>
                                         <button class="btn btn-primary" style="padding:7px 14px; font-size:13px;"
                                                 onclick="updateReportStatus('${r._id}', 'resolved', '${safeNote.replace(/'/g, "\\'")}')">
-                                            ✅ Mark Rescued / Resolved
+                                            Mark Rescued
                                         </button>
                                     ` : ''}
 
                                     ${r.status === 'reviewed' ? `
                                         <button class="btn btn-primary" style="padding:7px 14px; font-size:13px;"
                                                 onclick="updateReportStatus('${r._id}', 'resolved', '${safeNote.replace(/'/g, "\\'")}')">
-                                            ✅ Complete & Resolve Rescue
+                                            Complete Rescue
                                         </button>
                                         <button class="btn btn-secondary" style="padding:7px 14px; font-size:13px;"
                                                 onclick="updateReportStatus('${r._id}', 'pending', '${safeNote.replace(/'/g, "\\'")}')">
-                                            ↩️ Revert to Pending
+                                            Revert to Pending
                                         </button>
                                     ` : ''}
 
                                     ${r.status === 'resolved' ? `
                                         <span style="color:#15803d; font-weight:700; font-size:13.5px; display:inline-flex; align-items:center; gap:5px;">
-                                            ✅ Incident Successfully Resolved
+                                            Incident Resolved
                                         </span>
                                         <button class="btn btn-secondary" style="padding:6px 12px; font-size:12.5px;"
                                                 onclick="updateReportStatus('${r._id}', 'reviewed', '${safeNote.replace(/'/g, "\\'")}')">
-                                            ↩️ Reopen Incident
+                                            Reopen Incident
                                         </button>
                                     ` : ''}
 
                                     <button class="btn btn-secondary" style="padding:7px 12px; font-size:13px;"
                                             onclick="editReportNote('${r._id}', '${safeNote.replace(/'/g, "\\'")}')" title="Add or edit internal dispatch note">
-                                        💬 Note
+                                        Note
                                     </button>
                                 </div>
                             </div>
@@ -696,9 +692,9 @@
             document.getElementById('review-details').innerHTML = `
                 <div style="background:#f5f9f7; padding:15px; border-radius:10px; margin-bottom:15px;">
                     <p><strong>Applicant:</strong> ${escapeHtml(app.applicantName)}</p>
-                    <p><strong>Contact:</strong> 📞 ${escapeHtml(app.applicantPhone)} ${app.applicantEmail ? `| ✉️ ${escapeHtml(app.applicantEmail)}` : ''}</p>
-                    <p><strong>Address:</strong> 📍 ${escapeHtml(app.applicantAddress)}</p>
-                    <p><strong>Animal:</strong> 🐾 ${escapeHtml(app.animal?.name || app.animalName || 'Rescue Animal')} (${escapeHtml(app.type)})</p>
+                    <p><strong>Contact:</strong> Phone: ${escapeHtml(app.applicantPhone)} ${app.applicantEmail ? `| Email: ${escapeHtml(app.applicantEmail)}` : ''}</p>
+                    <p><strong>Address:</strong> ${escapeHtml(app.applicantAddress)}</p>
+                    <p><strong>Animal:</strong> ${escapeHtml(app.animal?.name || app.animalName || 'Rescue Animal')} (${escapeHtml(app.type)})</p>
                     <p><strong>Motivation:</strong> ${escapeHtml(app.reason)}</p>
                     <p><strong>Prior Experience:</strong> ${escapeHtml(app.experience || 'Not specified')}</p>
                     <p><strong>Home & Other Pets:</strong> ${escapeHtml(app.homeType || 'house')} | Other pets: ${app.hasOtherPets ? 'Yes' : 'No'}</p>
@@ -782,19 +778,19 @@
 
                 if (res.ok) {
                     msgDiv.className = 'message success';
-                    msgDiv.textContent = '✅ Rescued animal successfully added to the portal!';
+                    msgDiv.textContent = 'Rescued animal successfully added to the portal!';
                     msgDiv.style.display = 'block';
                     document.getElementById('add-animal-form').reset();
                     loadAnimalDropdown();
                     loadStats();
                 } else {
                     msgDiv.className = 'message error';
-                    msgDiv.textContent = '❌ ' + result.message;
+                    msgDiv.textContent = result.message;
                     msgDiv.style.display = 'block';
                 }
             } catch (err) {
                 msgDiv.className = 'message error';
-                msgDiv.textContent = '❌ Failed to submit animal details. Please check connection.';
+                msgDiv.textContent = 'Failed to submit animal details. Please check connection.';
                 msgDiv.style.display = 'block';
             }
         });
@@ -808,14 +804,14 @@
 
             if (!animalId) {
                 msgDiv.className = 'message error';
-                msgDiv.textContent = '❌ Please select an animal first.';
+                msgDiv.textContent = 'Please select an animal first.';
                 msgDiv.style.display = 'block';
                 return;
             }
 
             if (!note.trim()) {
                 msgDiv.className = 'message error';
-                msgDiv.textContent = '❌ Please write a medical note.';
+                msgDiv.textContent = 'Please write a medical note.';
                 msgDiv.style.display = 'block';
                 return;
             }
@@ -830,17 +826,17 @@
 
                 if (res.ok) {
                     msgDiv.className = 'message success';
-                    msgDiv.textContent = '✅ Medical record updated successfully!';
+                    msgDiv.textContent = 'Medical record updated successfully!';
                     msgDiv.style.display = 'block';
                     document.getElementById('med-note').value = '';
                 } else {
                     msgDiv.className = 'message error';
-                    msgDiv.textContent = '❌ ' + result.message;
+                    msgDiv.textContent = result.message;
                     msgDiv.style.display = 'block';
                 }
             } catch (err) {
                 msgDiv.className = 'message error';
-                msgDiv.textContent = '❌ Failed to record medical log.';
+                msgDiv.textContent = 'Failed to record medical log.';
                 msgDiv.style.display = 'block';
             }
         }

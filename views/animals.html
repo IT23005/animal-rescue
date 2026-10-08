@@ -9,13 +9,13 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/css/style.css?v=20261008-nav">
+    <link rel="stylesheet" href="/css/style.css?v=20261009-minimal">
 </head>
 
 <body>
 
     <nav class="navbar">
-        <div class="nav-brand"><a href="/index.html">🐾 Animal Rescue</a></div>
+        <div class="nav-brand"><a href="/index.html">Animal Rescue</a></div>
         <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation">
             <span></span>
             <span></span>
@@ -34,13 +34,13 @@
     </nav>
 
     <div class="page-header">
-        <h1>🐾 Available Animals</h1>
-        <p>Find your perfect companion</p>
+        <h1>Available Animals</h1>
+        <p>Find your companion</p>
     </div>
 
     <!-- FILTERS -->
     <div class="filters">
-        <input type="text" id="search" placeholder="🔍 Search by name...">
+        <input type="text" id="search" placeholder="Search by name...">
         <select id="filter-species">
             <option value="">All Species</option>
             <option value="dog">Dog</option>
@@ -66,7 +66,7 @@
     <!-- ANIMAL DETAIL MODAL -->
     <div id="modal" class="modal" style="display:none">
         <div class="modal-content">
-            <button class="modal-close" onclick="closeModal()">✕</button>
+            <button class="modal-close" onclick="closeModal()">&times;</button>
             <img id="modal-img" src="" alt="Animal"
                 style="width:100%; height:250px; object-fit:cover; border-radius:8px;">
             <h2 id="modal-name"></h2>
@@ -77,10 +77,10 @@
     <div id="modal-overlay" class="modal-overlay" style="display:none" onclick="closeModal()"></div>
 
     <footer class="footer">
-        <p>🐾 Animal Rescue & Adoption Portal</p>
+        <p>Animal Rescue & Adoption Portal</p>
     </footer>
 
-    <script src="/js/main.js?v=20261008-nav"></script>
+    <script src="/js/main.js?v=20261009-minimal"></script>
     <script>
         let currentUser = null;
 
@@ -116,7 +116,6 @@
             }
 
             container.innerHTML = animals.map(a => {
-                // ⚡ ডাটাবেজ স্ক্রিনশট অনুযায়ী হুবহু ফিল্ড ম্যাপিং (a.image এবং a.status)
                 const petImage = a.image || '/images/default-animal.png';
                 const petStatus = a.status || 'available';
 
@@ -132,9 +131,9 @@
                      onerror="this.onerror=null; this.src='https://via.placeholder.com/300x200?text=No+Image'">
                 <div class="card-body">
                     <h3>${a.name || 'Unnamed'}</h3>
-                    <p>🐾 ${displaySpecies} | ${a.gender || 'Unknown'}</p>
-                    <p>📅 Age: ${a.age || 'N/A'}</p>
-                    <p>❤️ Health: ${a.healthStatus || 'Healthy'}</p>
+                    <p>Species: ${displaySpecies} | ${a.gender || 'Unknown'}</p>
+                    <p>Age: ${a.age || 'N/A'}</p>
+                    <p>Health: ${a.healthStatus || 'Healthy'}</p>
                     <span class="badge badge-${lowerStatus}">
                         ${displayStatus}
                     </span>
@@ -149,7 +148,6 @@
             const res = await fetch(`/api/animals/${id}`);
             const a = await res.json();
 
-            // ⚡ ডাটাবেজ স্ক্রিনশট অনুযায়ী হুবহু image ফিল্ড ম্যাপিং
             const petImage = a.image || '/images/default-animal.png';
             const petStatus = a.status || 'available';
             const lowerStatus = petStatus.toLowerCase();
@@ -163,7 +161,7 @@
                 const appData = await appRes.json();
                 if (appData.hasPending) {
                     pendingNote = `<div style="background:#fff3cd; color:#856404; padding:10px; border-radius:8px; margin:10px 0; font-weight:600;">
-                ⏳ Requested for Adopt/Foster — Under Review
+                Application Submitted — Under Review
             </div>`;
                 }
             } catch (err) {
@@ -189,7 +187,7 @@
                 <a href="/apply.html?animalId=${a._id}&name=${encodeURIComponent(a.name || '')}" class="btn btn-primary">Apply to Adopt/Foster</a>
             `;
             } else if (lowerStatus === 'adopted') {
-                actionsDiv.innerHTML = `<p style="color:#777; font-weight:600;">✅ This animal has been adopted.</p>`;
+                actionsDiv.innerHTML = `<p style="color:#777; font-weight:600;">This animal has been adopted.</p>`;
             } else {
                 actionsDiv.innerHTML = `<p style="color:#777; font-weight:600;">This animal is not available.</p>`;
             }
