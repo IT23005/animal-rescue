@@ -576,6 +576,7 @@
                     <td>
                         <select onchange="updateUserRole('${u._id}', this.value)"
                             style="padding:5px; border:1px solid #ddd; border-radius:5px;">
+                            <option value="public" ${u.role === 'public' ? 'selected' : ''}>Public</option>
                             <option value="volunteer" ${u.role === 'volunteer' ? 'selected' : ''}>Volunteer</option>
                             <option value="admin" ${u.role === 'admin' ? 'selected' : ''}>Admin</option>
                         </select>

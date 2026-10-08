@@ -1,43 +1,46 @@
 const express = require('express');
 const router = express.Router();
+const mongoose = require('mongoose');
+const bcrypt = require('bcryptjs');
 const User = require('../models/User');
 const VolunteerApplication = require('../models/VolunteerApplication');
-const { isLoggedIn } = require('../middleware/auth');
+const { isLoggedIn, isAdmin } = require('../middleware/auth');
+
+// Helper to normalize email
+function cleanEmail(email) {
+    return (email || '').trim().toLowerCase();
+}
 
 // REGISTER
 router.post('/register', async (req, res) => {
     try {
-        console.log('Register attempt:', req.body);
-
         const { name, email, password, phone, address } = req.body;
+        const normalizedEmail = cleanEmail(email);
 
-        if (!name || !email || !password) {
-            return res.status(400).json({ message: 'Name, email and password are required' });
+        if (!name || !name.trim() || !normalizedEmail || !password) {
+            return res.status(400).json({ message: 'Name, email, and password are required.' });
         }
 
         if (password.length < 6) {
-            return res.status(400).json({ message: 'Password must be at least 6 characters' });
+            return res.status(400).json({ message: 'Password must be at least 6 characters long.' });
         }
 
-        const existingUser = await User.findOne({ email });
+        const existingUser = await User.findOne({ email: normalizedEmail });
         if (existingUser) {
-            return res.status(400).json({ message: 'Email already registered' });
+            return res.status(400).json({ message: 'An account with this email already exists.' });
         }
 
-        // Hash password manually here instead of in the model
-        const bcrypt = require('bcryptjs');
         const hashedPassword = await bcrypt.hash(password, 10);
 
         const user = new User({
-            name,
-            email,
+            name: name.trim(),
+            email: normalizedEmail,
             password: hashedPassword,
-            phone,
-            address
+            phone: (phone || '').trim(),
+            address: (address || '').trim()
         });
 
         await user.save();
-        console.log('User created:', user._id);
 
         req.session.userId = user._id;
         req.session.userRole = user.role;
@@ -46,7 +49,7 @@ router.post('/register', async (req, res) => {
         req.session.save((err) => {
             if (err) console.error('Session save error:', err);
             res.status(201).json({
-                message: 'Registration successful',
+                message: 'Registration successful! Welcome to Animal Rescue.',
                 user: { id: user._id, name: user.name, role: user.role }
             });
         });
@@ -61,23 +64,28 @@ router.post('/register', async (req, res) => {
 router.post('/login', async (req, res) => {
     try {
         const { email, password, adminCode } = req.body;
+        const normalizedEmail = cleanEmail(email);
 
-        const user = await User.findOne({ email });
+        if (!normalizedEmail || !password) {
+            return res.status(400).json({ message: 'Email and password are required.' });
+        }
+
+        const user = await User.findOne({ email: normalizedEmail });
         if (!user) {
-            return res.status(400).json({ message: 'Invalid email or password' });
+            return res.status(400).json({ message: 'Invalid email or password.' });
         }
 
         const isMatch = await user.comparePassword(password);
         if (!isMatch) {
-            return res.status(400).json({ message: 'Invalid email or password' });
+            return res.status(400).json({ message: 'Invalid email or password.' });
         }
 
         // If trying to login as admin, check secret code
         if (user.role === 'admin') {
             const expectedCode = (process.env.ADMIN_SECRET_CODE || '').trim();
             const providedCode = (adminCode || '').trim();
-            if (providedCode !== expectedCode) {
-                return res.status(403).json({ message: 'Invalid admin code' });
+            if (expectedCode && providedCode !== expectedCode) {
+                return res.status(403).json({ message: 'Invalid admin secret code.' });
             }
         }
 
@@ -93,6 +101,7 @@ router.post('/login', async (req, res) => {
             });
         });
     } catch (err) {
+        console.error('Login error:', err);
         res.status(500).json({ message: 'Server error', error: err.message });
     }
 });
@@ -108,7 +117,7 @@ router.post('/logout', (req, res) => {
 
 // GET current user (check if logged in)
 router.get('/me', (req, res) => {
-    if (req.session.userId) {
+    if (req.session && req.session.userId) {
         res.json({
             loggedIn: true,
             user: {
@@ -123,96 +132,127 @@ router.get('/me', (req, res) => {
 });
 
 // GET all users (admin only)
-router.get('/users', async (req, res) => {
+router.get('/users', isLoggedIn, isAdmin, async (req, res) => {
     try {
-        if (req.session.userRole !== 'admin') {
-            return res.status(403).json({ message: 'Admin only' });
-        }
         const users = await User.find().select('-password').sort({ createdAt: -1 });
         res.json(users);
     } catch (err) {
-        res.status(500).json({ message: 'Server error' });
+        res.status(500).json({ message: 'Server error', error: err.message });
     }
 });
 
 // PUT update user role (admin only)
-router.put('/users/:id/role', async (req, res) => {
+router.put('/users/:id/role', isLoggedIn, isAdmin, async (req, res) => {
     try {
-        if (req.session.userRole !== 'admin') {
-            return res.status(403).json({ message: 'Admin only' });
+        if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+            return res.status(400).json({ message: 'Invalid user ID format' });
         }
-        await User.findByIdAndUpdate(req.params.id, { role: req.body.role });
-        res.json({ message: 'Role updated' });
+
+        const { role } = req.body;
+        if (!['public', 'volunteer', 'admin'].includes(role)) {
+            return res.status(400).json({ message: 'Invalid role. Must be public, volunteer, or admin.' });
+        }
+
+        // Prevent admin from demoting themselves if desired
+        if (req.session.userId.toString() === req.params.id && role !== 'admin') {
+            return res.status(400).json({ message: 'You cannot change your own admin role.' });
+        }
+
+        const user = await User.findByIdAndUpdate(
+            req.params.id,
+            { role },
+            { new: true }
+        ).select('-password');
+
+        if (!user) return res.status(404).json({ message: 'User not found' });
+        res.json({ message: 'User role updated successfully', user });
     } catch (err) {
-        res.status(500).json({ message: 'Server error' });
+        res.status(500).json({ message: 'Server error', error: err.message });
     }
 });
 
-// POST volunteer application (no login needed)
+// POST volunteer application (public)
 router.post('/volunteer-apply', async (req, res) => {
     try {
         const { name, email, phone, address, reason, experience } = req.body;
+        const normalizedEmail = cleanEmail(email);
 
-        if (!name || !email || !phone || !address || !reason) {
-            return res.status(400).json({ message: 'All required fields must be filled' });
+        if (!name || !name.trim() || !normalizedEmail ||
+            !phone || !phone.trim() ||
+            !address || !address.trim() ||
+            !reason || !reason.trim()) {
+            return res.status(400).json({ message: 'All required fields must be filled.' });
         }
 
-        // Check if already applied
+        // Check if user already has a pending application
         const existing = await VolunteerApplication.findOne({
-            email,
+            email: normalizedEmail,
             status: 'pending'
         });
         if (existing) {
-            return res.status(400).json({ message: 'You already have a pending application' });
+            return res.status(400).json({ message: 'You already have an active pending volunteer application.' });
         }
 
         const application = new VolunteerApplication({
-            name, email, phone, address, reason, experience
+            name: name.trim(),
+            email: normalizedEmail,
+            phone: phone.trim(),
+            address: address.trim(),
+            reason: reason.trim(),
+            experience: (experience || '').trim()
         });
 
         await application.save();
-        res.status(201).json({ message: 'Volunteer application submitted successfully' });
+        res.status(201).json({
+            message: 'Volunteer application submitted successfully! Our admin team will review it soon.'
+        });
     } catch (err) {
         res.status(500).json({ message: 'Server error', error: err.message });
     }
 });
 
 // GET all volunteer applications (admin only)
-router.get('/volunteer-applications', async (req, res) => {
+router.get('/volunteer-applications', isLoggedIn, isAdmin, async (req, res) => {
     try {
-        if (req.session.userRole !== 'admin') {
-            return res.status(403).json({ message: 'Admin only' });
-        }
         const applications = await VolunteerApplication.find().sort({ createdAt: -1 });
         res.json(applications);
     } catch (err) {
-        res.status(500).json({ message: 'Server error' });
+        res.status(500).json({ message: 'Server error', error: err.message });
     }
 });
 
 // PUT review volunteer application (admin only)
-router.put('/volunteer-applications/:id', async (req, res) => {
+router.put('/volunteer-applications/:id', isLoggedIn, isAdmin, async (req, res) => {
     try {
-        if (req.session.userRole !== 'admin') {
-            return res.status(403).json({ message: 'Admin only' });
+        if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+            return res.status(400).json({ message: 'Invalid volunteer application ID format' });
         }
 
         const { status } = req.body;
+        if (!['pending', 'approved', 'rejected'].includes(status)) {
+            return res.status(400).json({ message: 'Invalid status value.' });
+        }
+
         const volApp = await VolunteerApplication.findByIdAndUpdate(
             req.params.id,
             {
                 status,
                 reviewedBy: req.session.userId,
-                reviewerName: req.session.userName,
+                reviewerName: req.session.userName || 'Admin',
                 reviewedAt: new Date()
             },
             { new: true }
         );
 
-        // If approved, create volunteer account automatically
+        if (!volApp) {
+            return res.status(404).json({ message: 'Volunteer application not found' });
+        }
+
+        let accountCreated = false;
+        // If approved, create volunteer account automatically or upgrade existing account
         if (status === 'approved') {
-            const bcrypt = require('bcryptjs');
-            const hashedPassword = await bcrypt.hash(volApp.phone, 10);
+            const tempPassword = volApp.phone || 'rescue123';
+            const hashedPassword = await bcrypt.hash(tempPassword, 10);
 
             const existingUser = await User.findOne({ email: volApp.email });
             if (!existingUser) {
@@ -225,12 +265,22 @@ router.put('/volunteer-applications/:id', async (req, res) => {
                     role: 'volunteer'
                 });
                 await newVolunteer.save();
+                volApp.userId = newVolunteer._id;
+                await volApp.save();
+                accountCreated = true;
             } else {
                 await User.findByIdAndUpdate(existingUser._id, { role: 'volunteer' });
+                volApp.userId = existingUser._id;
+                await volApp.save();
             }
         }
 
-        res.json({ message: 'Application reviewed', volApp });
+        res.json({
+            message: status === 'approved'
+                ? `Application approved! ${accountCreated ? 'New volunteer account created (default password is applicant phone number).' : 'Existing user upgraded to volunteer.'}`
+                : 'Application rejected.',
+            volApp
+        });
     } catch (err) {
         res.status(500).json({ message: 'Server error', error: err.message });
     }
@@ -240,9 +290,10 @@ router.put('/volunteer-applications/:id', async (req, res) => {
 router.get('/profile', isLoggedIn, async (req, res) => {
     try {
         const user = await User.findById(req.session.userId).select('-password');
+        if (!user) return res.status(404).json({ message: 'User not found' });
         res.json(user);
     } catch (err) {
-        res.status(500).json({ message: 'Server error' });
+        res.status(500).json({ message: 'Server error', error: err.message });
     }
 });
 
@@ -251,20 +302,28 @@ router.put('/profile', isLoggedIn, async (req, res) => {
     try {
         const { name, phone, address } = req.body;
 
+        if (!name || !name.trim()) {
+            return res.status(400).json({ message: 'Name cannot be empty.' });
+        }
+
         const user = await User.findByIdAndUpdate(
             req.session.userId,
-            { name, phone, address },
+            {
+                name: name.trim(),
+                phone: (phone || '').trim(),
+                address: (address || '').trim()
+            },
             { new: true }
         ).select('-password');
 
-        // Update session name
-        req.session.userName = user.name;
+        if (!user) return res.status(404).json({ message: 'User not found' });
 
+        req.session.userName = user.name;
         req.session.save(() => {
-            res.json({ message: 'Profile updated', user });
+            res.json({ message: 'Profile updated successfully', user });
         });
     } catch (err) {
-        res.status(500).json({ message: 'Server error' });
+        res.status(500).json({ message: 'Server error', error: err.message });
     }
 });
 
@@ -273,37 +332,48 @@ router.put('/profile/password', isLoggedIn, async (req, res) => {
     try {
         const { currentPassword, newPassword } = req.body;
 
-        const user = await User.findById(req.session.userId);
-        const isMatch = await user.comparePassword(currentPassword);
+        if (!currentPassword || !newPassword) {
+            return res.status(400).json({ message: 'Both current password and new password are required.' });
+        }
 
+        const user = await User.findById(req.session.userId);
+        if (!user) return res.status(404).json({ message: 'User not found' });
+
+        const isMatch = await user.comparePassword(currentPassword);
         if (!isMatch) {
-            return res.status(400).json({ message: 'Current password is incorrect' });
+            return res.status(400).json({ message: 'Current password is incorrect.' });
         }
 
         if (newPassword.length < 6) {
-            return res.status(400).json({ message: 'New password must be at least 6 characters' });
+            return res.status(400).json({ message: 'New password must be at least 6 characters long.' });
         }
 
-        const bcrypt = require('bcryptjs');
         user.password = await bcrypt.hash(newPassword, 10);
         await user.save();
 
-        res.json({ message: 'Password changed successfully' });
+        res.json({ message: 'Password changed successfully.' });
     } catch (err) {
-        res.status(500).json({ message: 'Server error' });
+        res.status(500).json({ message: 'Server error', error: err.message });
     }
 });
 
 // DELETE user (admin only)
-router.delete('/users/:id', async (req, res) => {
+router.delete('/users/:id', isLoggedIn, isAdmin, async (req, res) => {
     try {
-        if (req.session.userRole !== 'admin') {
-            return res.status(403).json({ message: 'Admin only' });
+        if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+            return res.status(400).json({ message: 'Invalid user ID format' });
         }
-        await User.findByIdAndDelete(req.params.id);
-        res.json({ message: 'User deleted' });
+
+        if (req.session.userId.toString() === req.params.id) {
+            return res.status(400).json({ message: 'You cannot delete your own admin account.' });
+        }
+
+        const deleted = await User.findByIdAndDelete(req.params.id);
+        if (!deleted) return res.status(404).json({ message: 'User not found' });
+
+        res.json({ message: 'User deleted successfully' });
     } catch (err) {
-        res.status(500).json({ message: 'Server error' });
+        res.status(500).json({ message: 'Server error', error: err.message });
     }
 });
 

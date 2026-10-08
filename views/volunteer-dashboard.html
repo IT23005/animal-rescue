@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Volunteer Dashboard | Animal Rescue</title>
-        <!-- Google Fonts -->
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -15,25 +15,22 @@
 <body>
 
     <nav class="navbar">
-        <div class="nav-brand"><a href="/">🐾 Animal Rescue</a></div>
+        <div class="nav-brand"><a href="/index.html">🐾 Animal Rescue</a></div>
         <div class="nav-links">
-            <a href="/">Home</a>
-            <a href="/animals">Browse Animals</a>
-            <a href="/report">Report Stray</a>
-            <a href="/volunteer">Volunteer Panel</a>
+            <a href="/index.html">Home</a>
+            <a href="/animals.html">Browse Animals</a>
+            <a href="/report.html">Report Stray</a>
+            <a href="/volunteer-dashboard.html">Volunteer Panel</a>
             <span id="admin-link"></span>
-            <span id="volunteer-link"></span>
             <span id="dashboard-link"></span>
-            <a href="/login" id="nav-login" style="display:none">Login</a>
             <span id="nav-user"></span>
             <a href="#" id="nav-logout" style="display:none" onclick="logout()">Logout</a>
         </div>
     </nav>
 
-
     <div class="page-header">
         <h1>🤝 Volunteer Dashboard</h1>
-        <p>Manage animals and adoption applications</p>
+        <p>Review applications, respond to stray reports, and update animal health logs</p>
     </div>
 
     <div class="dashboard">
@@ -45,18 +42,23 @@
                 <p>Pending Applications</p>
             </div>
             <div class="dash-stat">
+                <h3 id="stat-reports">0</h3>
+                <p>Stray Reports</p>
+            </div>
+            <div class="dash-stat">
                 <h3 id="stat-animals">0</h3>
-                <p>Total Animals</p>
+                <p>Available Animals</p>
             </div>
             <div class="dash-stat">
                 <h3 id="stat-adopted">0</h3>
-                <p>Adopted</p>
+                <p>Adopted Animals</p>
             </div>
         </div>
 
         <!-- TABS -->
         <div class="tab-bar">
-            <button class="tab-btn active" onclick="showTab('applications')">📋 Applications</button>
+            <button class="tab-btn active" onclick="showTab('applications')">📋 Adoption Apps</button>
+            <button class="tab-btn" onclick="showTab('reports')">📍 Stray Reports</button>
             <button class="tab-btn" onclick="showTab('add-animal')">➕ Add Animal</button>
             <button class="tab-btn" onclick="showTab('medical')">💉 Medical Logs</button>
         </div>
@@ -64,12 +66,13 @@
         <!-- APPLICATIONS TAB -->
         <div id="tab-applications" class="tab-content">
             <div class="table-container">
-                <h3>Pending Adoption Applications</h3>
+                <h3>📋 Adoption & Foster Applications</h3>
                 <div style="overflow-x:auto;">
                     <table>
                         <thead>
                             <tr>
                                 <th>Applicant</th>
+                                <th>Contact & Location</th>
                                 <th>Animal</th>
                                 <th>Type</th>
                                 <th>Reason</th>
@@ -80,7 +83,36 @@
                         </thead>
                         <tbody id="applications-table">
                             <tr>
-                                <td colspan="7" style="text-align:center; padding:20px;">Loading...</td>
+                                <td colspan="8" style="text-align:center; padding:25px;">Loading applications...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- STRAY REPORTS TAB -->
+        <div id="tab-reports" class="tab-content" style="display:none;">
+            <div class="table-container">
+                <h3>📍 Public Stray Reports</h3>
+                <div style="overflow-x:auto;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Reporter</th>
+                                <th>Phone & Address</th>
+                                <th>Species</th>
+                                <th>Location Found</th>
+                                <th>Description</th>
+                                <th>Photo</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="reports-table">
+                            <tr>
+                                <td colspan="9" style="text-align:center; padding:25px;">Loading reports...</td>
                             </tr>
                         </tbody>
                     </table>
@@ -91,19 +123,19 @@
         <!-- ADD ANIMAL TAB -->
         <div id="tab-add-animal" class="tab-content" style="display:none;">
             <div class="table-container">
-                <h3>➕ Add New Animal</h3>
+                <h3>➕ Add Rescued Animal</h3>
                 <div style="padding:25px;">
                     <div id="add-message" class="message" style="display:none;"></div>
                     <form id="add-animal-form" enctype="multipart/form-data">
                         <div class="form-row">
                             <div class="form-group">
-                                <label>Animal Name</label>
+                                <label>Animal Name *</label>
                                 <input type="text" id="a-name" placeholder="e.g. Max" required>
                             </div>
                             <div class="form-group">
-                                <label>Species</label>
+                                <label>Species *</label>
                                 <select id="a-species" required>
-                                    <option value="">Select</option>
+                                    <option value="">Select Species</option>
                                     <option value="dog">Dog</option>
                                     <option value="cat">Cat</option>
                                     <option value="bird">Bird</option>
@@ -114,14 +146,14 @@
                         <div class="form-row">
                             <div class="form-group">
                                 <label>Age</label>
-                                <input type="text" id="a-age" placeholder="e.g. 2 years">
+                                <input type="text" id="a-age" placeholder="e.g. 2 years, 4 months">
                             </div>
                             <div class="form-group">
                                 <label>Gender</label>
                                 <select id="a-gender">
+                                    <option value="unknown">Unknown</option>
                                     <option value="male">Male</option>
                                     <option value="female">Female</option>
-                                    <option value="unknown">Unknown</option>
                                 </select>
                             </div>
                         </div>
@@ -135,14 +167,14 @@
                         </div>
                         <div class="form-group">
                             <label>Description</label>
-                            <textarea id="a-description" rows="3" placeholder="Describe the animal..."
+                            <textarea id="a-description" rows="3" placeholder="Temperament, rescue story, special needs..."
                                 style="resize:vertical;"></textarea>
                         </div>
                         <div class="form-group">
-                            <label>Photo</label>
+                            <label>Photo <small style="color:#777;">(Max 5MB)</small></label>
                             <input type="file" id="a-image" accept="image/*">
                         </div>
-                        <button type="submit" class="btn btn-primary">Add Animal</button>
+                        <button type="submit" class="btn btn-primary">Save Animal</button>
                     </form>
                 </div>
             </div>
@@ -151,157 +183,261 @@
         <!-- MEDICAL LOGS TAB -->
         <div id="tab-medical" class="tab-content" style="display:none;">
             <div class="table-container">
-                <h3>💉 Add Medical Log</h3>
+                <h3>💉 Record Medical Log</h3>
                 <div style="padding:25px;">
                     <div id="med-message" class="message" style="display:none;"></div>
                     <div class="form-group">
-                        <label>Select Animal</label>
-                        <select id="med-animal">
+                        <label>Select Animal *</label>
+                        <select id="med-animal" required>
                             <option value="">Loading animals...</option>
                         </select>
                     </div>
                     <div class="form-group">
-                        <label>Medical Note</label>
-                        <textarea id="med-note" rows="4" placeholder="Vaccination, treatment, checkup details..."
-                            style="resize:vertical;"></textarea>
+                        <label>Medical Note / Treatment Details *</label>
+                        <textarea id="med-note" rows="4" placeholder="Vaccinations given, antibiotics, wound dressing, vet examination..."
+                            style="resize:vertical;" required></textarea>
                     </div>
-                    <button class="btn btn-primary" onclick="addMedicalLog()">Add Log</button>
+                    <button class="btn btn-primary" onclick="addMedicalLog()">Record Log</button>
                 </div>
             </div>
         </div>
 
     </div>
 
-    <!-- REVIEW MODAL -->
+    <!-- REVIEW APPLICATION MODAL -->
     <div id="review-modal" class="modal" style="display:none;">
         <button class="modal-close" onclick="closeReviewModal()">✕</button>
         <h2>Review Application</h2>
         <input type="hidden" id="review-app-id">
-        <div id="review-details" style="margin:15px 0; color:#555;"></div>
+        <div id="review-details" style="margin:15px 0; color:#555; line-height:1.6;"></div>
         <div class="form-group">
-            <label>Review Note (Optional)</label>
-            <textarea id="review-note" rows="3"
-                style="width:100%; padding:10px; border:2px solid #e0e0e0; border-radius:8px;"></textarea>
+            <label>Reviewer Note / Decision Reason (Optional)</label>
+            <textarea id="review-note" rows="3" placeholder="Add notes for applicant or internal record..."
+                style="width:100%; padding:10px; border:1.5px solid #d5ded8; border-radius:8px;"></textarea>
         </div>
-        <div style="display:flex; gap:10px; margin-top:15px;">
-            <button class="btn btn-primary" onclick="submitReview('approved')">✅ Approve</button>
-            <button class="btn btn-danger" onclick="submitReview('rejected')">❌ Reject</button>
+        <div style="display:flex; gap:12px; margin-top:20px;">
+            <button class="btn btn-primary" onclick="submitReview('approved')">✅ Approve Application</button>
+            <button class="btn btn-danger" onclick="submitReview('rejected')">❌ Reject Application</button>
         </div>
     </div>
     <div id="review-overlay" class="modal-overlay" style="display:none;" onclick="closeReviewModal()"></div>
 
     <footer class="footer">
-        <p>🐾 Animal Rescue & Adoption Portal</p>
+        <p>🐾 Animal Rescue & Adoption Portal | Helping animals find homes</p>
     </footer>
 
     <script src="/js/main.js?v=20261008-2"></script>
     <script>
-
+        let allApplications = [];
+        let allReports = [];
 
         async function checkAccess() {
-            const res = await fetch('/api/auth/me');
-            const data = await res.json();
-            const dashboardLink = document.getElementById('dashboard-link');
+            try {
+                const res = await fetch('/api/auth/me');
+                const data = await res.json();
 
-            if (dashboardLink) dashboardLink.innerHTML = '';
-
-            if (!data.loggedIn) {
-                window.location.href = '/login.html';
-                return;
-            }
-
-            if (data.user.role !== 'volunteer' && data.user.role !== 'admin') {
-                window.location.href = '/login.html';
-                return;
-            }
-
-            // Show admin panel link if admin
-            if (data.user.role === 'admin') {
-                const adminLink = document.getElementById('admin-link');
-                if (adminLink) {
-                    adminLink.innerHTML = '<a href="/admin">Admin Panel</a>';
+                if (!data.loggedIn) {
+                    window.location.href = '/login.html';
+                    return;
                 }
-            }
 
-            loadDashboard();
+                if (data.user.role !== 'volunteer' && data.user.role !== 'admin') {
+                    window.location.href = '/login.html';
+                    return;
+                }
+
+                if (data.user.role === 'admin') {
+                    const adminLink = document.getElementById('admin-link');
+                    if (adminLink) {
+                        adminLink.innerHTML = '<a href="/admin-dashboard.html">Admin Panel</a>';
+                    }
+                }
+
+                loadDashboard();
+            } catch (err) {
+                console.error('Access check failed', err);
+            }
         }
 
         async function loadDashboard() {
-            await loadApplications();
-            await loadAnimalDropdown();
-            await loadStats();
+            await Promise.all([
+                loadApplications(),
+                loadReports(),
+                loadAnimalDropdown(),
+                loadStats()
+            ]);
         }
 
         async function loadStats() {
-            const res = await fetch('/api/animals/stats');
-            const data = await res.json();
-            document.getElementById('stat-animals').textContent = (data.available || 0) + (data.adopted || 0);
-            document.getElementById('stat-adopted').textContent = data.adopted || 0;
+            try {
+                const res = await fetch('/api/animals/stats');
+                const data = await res.json();
+                document.getElementById('stat-animals').textContent = data.available || 0;
+                document.getElementById('stat-adopted').textContent = data.adopted || 0;
+                document.getElementById('stat-reports').textContent = data.reports || 0;
 
-            const appsRes = await fetch('/api/applications');
-            const apps = await appsRes.json();
-            const pending = apps.filter(a => a.status === 'pending').length;
-            document.getElementById('stat-pending-apps').textContent = pending;
+                const pendingApps = allApplications.filter(a => a.status === 'pending').length;
+                document.getElementById('stat-pending-apps').textContent = pendingApps;
+            } catch (err) {
+                console.error('Stats load error', err);
+            }
         }
 
         async function loadApplications() {
-            const res = await fetch('/api/applications');
-            const apps = await res.json();
             const tbody = document.getElementById('applications-table');
+            try {
+                const res = await fetch('/api/applications');
+                if (!res.ok) throw new Error('Failed to fetch applications');
+                allApplications = await res.json();
 
-            if (apps.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:20px;">No applications yet.</td></tr>';
-                return;
-            }
-
-            tbody.innerHTML = apps.map(app => `
-                <tr>
-                    <td><strong>${app.applicant?.name || 'N/A'}</strong><br>
-                        <small>${app.applicant?.email || ''}</small></td>
-                    <td>${app.animal?.name || 'N/A'}<br>
-                        <small>${app.animal?.species || ''}</small></td>
-                    <td><span class="badge badge-available">${app.type}</span></td>
-                    <td style="max-width:150px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;"
-                        title="${app.reason}">${app.reason}</td>
-                    <td>${new Date(app.createdAt).toLocaleDateString()}</td>
-                    <td><span class="badge ${app.status === 'pending' ? 'badge-pending' : app.status === 'approved' ? 'badge-available' : 'badge-critical'}">
-                        ${app.status}</span></td>
-                    <td>
-                        ${app.status === 'pending' ?
-                    `<button class="btn btn-primary" style="padding:6px 12px; font-size:13px;"
-                                onclick="openReview('${app._id}', '${app.applicant?.name}', '${app.animal?.name}', '${app.type}', '${app.reason}')">
-                                Review</button>` :
-                    '<span style="color:#777; font-size:13px;">Done</span>'
+                if (!allApplications || allApplications.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding:25px;">No applications submitted yet.</td></tr>';
+                    return;
                 }
-                    </td>
-                </tr>
-            `).join('');
+
+                tbody.innerHTML = allApplications.map(app => {
+                    const petName = app.animal?.name || app.animalName || 'Rescue Animal';
+                    const petSpecies = app.animal?.species ? `(${app.animal.species})` : '';
+                    const contact = `📞 ${app.applicantPhone || 'N/A'}${app.applicantEmail ? `<br><small>${app.applicantEmail}</small>` : ''}<br><small>📍 ${app.applicantAddress || 'N/A'}</small>`;
+
+                    return `
+                        <tr>
+                            <td><strong>${escapeHtml(app.applicantName || 'Anonymous')}</strong></td>
+                            <td>${contact}</td>
+                            <td><strong>${escapeHtml(petName)}</strong> <small>${escapeHtml(petSpecies)}</small></td>
+                            <td><span class="badge badge-available">${escapeHtml(app.type || 'adoption')}</span></td>
+                            <td style="max-width:180px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${escapeHtml(app.reason || '')}">
+                                ${escapeHtml(app.reason || 'None specified')}
+                            </td>
+                            <td>${new Date(app.createdAt).toLocaleDateString()}</td>
+                            <td>
+                                <span class="badge ${app.status === 'pending' ? 'badge-pending' : app.status === 'approved' ? 'badge-available' : 'badge-critical'}">
+                                    ${app.status}
+                                </span>
+                                ${app.reviewerName ? `<br><small style="color:#777;">By: ${escapeHtml(app.reviewerName)}</small>` : ''}
+                            </td>
+                            <td>
+                                ${app.status === 'pending' ? `
+                                    <button class="btn btn-primary" style="padding:6px 14px; font-size:13px;"
+                                            onclick="openReview('${app._id}')">
+                                        Review
+                                    </button>
+                                ` : `
+                                    <span style="color:#777; font-size:13px; font-weight:600;">
+                                        ${app.status === 'approved' ? '✅ Approved' : '❌ Rejected'}
+                                    </span>
+                                `}
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+            } catch (err) {
+                tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding:25px; color:red;">Failed to load applications.</td></tr>';
+            }
+        }
+
+        async function loadReports() {
+            const tbody = document.getElementById('reports-table');
+            try {
+                const res = await fetch('/api/reports');
+                if (!res.ok) throw new Error('Failed to fetch reports');
+                allReports = await res.json();
+
+                if (!allReports || allReports.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="9" style="text-align:center; padding:25px;">No stray reports currently on file.</td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = allReports.map(r => {
+                    const imgThumb = r.image ? `
+                        <img src="${r.image}" style="width:50px; height:50px; object-fit:cover; border-radius:6px; cursor:pointer;"
+                             onclick="window.open('${r.image}', '_blank')">
+                    ` : '<span style="color:#999; font-size:12px;">No photo</span>';
+
+                    return `
+                        <tr>
+                            <td><strong>${escapeHtml(r.reporterName)}</strong></td>
+                            <td>📞 ${escapeHtml(r.reporterPhone)}<br><small>📍 ${escapeHtml(r.reporterAddress)}</small></td>
+                            <td><span class="badge badge-pending">${escapeHtml(r.species || 'other')}</span></td>
+                            <td><strong>${escapeHtml(r.location)}</strong></td>
+                            <td style="max-width:180px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${escapeHtml(r.description)}">
+                                ${escapeHtml(r.description)}
+                            </td>
+                            <td>${imgThumb}</td>
+                            <td>${new Date(r.createdAt).toLocaleDateString()}</td>
+                            <td>
+                                <span class="badge ${r.status === 'pending' ? 'badge-pending' : r.status === 'reviewed' ? 'badge-treatment' : 'badge-available'}">
+                                    ${r.status}
+                                </span>
+                                ${r.reviewerName ? `<br><small style="color:#777;">By: ${escapeHtml(r.reviewerName)}</small>` : ''}
+                            </td>
+                            <td>
+                                ${r.status !== 'resolved' ? `
+                                    <div style="display:flex; flex-direction:column; gap:4px;">
+                                        ${r.status === 'pending' ? `
+                                            <button class="btn btn-secondary" style="padding:4px 8px; font-size:12px;"
+                                                    onclick="updateReportStatus('${r._id}', 'reviewed')">
+                                                Mark Reviewed
+                                            </button>
+                                        ` : ''}
+                                        <button class="btn btn-primary" style="padding:4px 8px; font-size:12px;"
+                                                onclick="updateReportStatus('${r._id}', 'resolved')">
+                                            Mark Resolved
+                                        </button>
+                                    </div>
+                                ` : '<span style="color:#2c7a4b; font-size:13px; font-weight:600;">✅ Resolved</span>'}
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+            } catch (err) {
+                tbody.innerHTML = '<tr><td colspan="9" style="text-align:center; padding:25px; color:red;">Failed to load reports.</td></tr>';
+            }
         }
 
         async function loadAnimalDropdown() {
-            const res = await fetch('/api/animals?status=available');
-            const animals = await res.json();
-            const select = document.getElementById('med-animal');
-            select.innerHTML = animals.map(a =>
-                `<option value="${a._id}">${a.name} (${a.species})</option>`
-            ).join('');
+            try {
+                const res = await fetch('/api/animals?status=available');
+                const animals = await res.json();
+                const select = document.getElementById('med-animal');
+                if (!animals || animals.length === 0) {
+                    select.innerHTML = '<option value="">No available animals found</option>';
+                    return;
+                }
+                select.innerHTML = '<option value="">-- Choose an Animal --</option>' + animals.map(a =>
+                    `<option value="${a._id}">${escapeHtml(a.name)} (${escapeHtml(a.species)})</option>`
+                ).join('');
+            } catch (err) {
+                console.error('Dropdown load error', err);
+            }
         }
 
-        function showTab(tab) {
+        function showTab(tabName) {
             document.querySelectorAll('.tab-content').forEach(t => t.style.display = 'none');
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById('tab-' + tab).style.display = 'block';
-            event.target.classList.add('active');
+            const target = document.getElementById('tab-' + tabName);
+            if (target) target.style.display = 'block';
+            if (event && event.target) event.target.classList.add('active');
         }
 
-        function openReview(id, applicantName, animalName, type, reason) {
-            document.getElementById('review-app-id').value = id;
+        function openReview(appId) {
+            const app = allApplications.find(a => a._id === appId);
+            if (!app) return;
+
+            document.getElementById('review-app-id').value = app._id;
+            document.getElementById('review-note').value = '';
             document.getElementById('review-details').innerHTML = `
-                <p><strong>Applicant:</strong> ${applicantName}</p>
-                <p><strong>Animal:</strong> ${animalName}</p>
-                <p><strong>Type:</strong> ${type}</p>
-                <p><strong>Reason:</strong> ${reason}</p>
+                <div style="background:#f5f9f7; padding:15px; border-radius:10px; margin-bottom:15px;">
+                    <p><strong>Applicant:</strong> ${escapeHtml(app.applicantName)}</p>
+                    <p><strong>Contact:</strong> 📞 ${escapeHtml(app.applicantPhone)} ${app.applicantEmail ? `| ✉️ ${escapeHtml(app.applicantEmail)}` : ''}</p>
+                    <p><strong>Address:</strong> 📍 ${escapeHtml(app.applicantAddress)}</p>
+                    <p><strong>Animal:</strong> 🐾 ${escapeHtml(app.animal?.name || app.animalName || 'Rescue Animal')} (${escapeHtml(app.type)})</p>
+                    <p><strong>Motivation:</strong> ${escapeHtml(app.reason)}</p>
+                    <p><strong>Prior Experience:</strong> ${escapeHtml(app.experience || 'Not specified')}</p>
+                    <p><strong>Home & Other Pets:</strong> ${escapeHtml(app.homeType || 'house')} | Other pets: ${app.hasOtherPets ? 'Yes' : 'No'}</p>
+                </div>
             `;
+
             document.getElementById('review-modal').style.display = 'flex';
             document.getElementById('review-overlay').style.display = 'block';
         }
@@ -315,21 +451,50 @@
             const id = document.getElementById('review-app-id').value;
             const reviewNote = document.getElementById('review-note').value;
 
-            const res = await fetch(`/api/applications/${id}`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ status, reviewNote })
-            });
-
-            if (res.ok) {
-                closeReviewModal();
-                loadDashboard();
+            try {
+                const res = await fetch(`/api/applications/${id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ status, reviewNote })
+                });
+                const result = await res.json();
+                if (res.ok) {
+                    closeReviewModal();
+                    await loadApplications();
+                    await loadStats();
+                } else {
+                    alert('Error: ' + result.message);
+                }
+            } catch (err) {
+                alert('Connection error occurred while updating application.');
             }
         }
 
+        async function updateReportStatus(reportId, status) {
+            const moderatorNote = prompt(`Optional note for marking report as ${status}:`) || '';
+            try {
+                const res = await fetch(`/api/reports/${reportId}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ status, moderatorNote })
+                });
+                if (res.ok) {
+                    await loadReports();
+                    await loadStats();
+                } else {
+                    const result = await res.json();
+                    alert('Error: ' + result.message);
+                }
+            } catch (err) {
+                alert('Connection error occurred while updating report.');
+            }
+        }
+
+        // Add Animal Form
         document.getElementById('add-animal-form').addEventListener('submit', async (e) => {
             e.preventDefault();
             const msgDiv = document.getElementById('add-message');
+            msgDiv.style.display = 'none';
 
             const formData = new FormData();
             formData.append('name', document.getElementById('a-name').value);
@@ -341,54 +506,87 @@
             const img = document.getElementById('a-image').files[0];
             if (img) formData.append('image', img);
 
-            const res = await fetch('/api/animals', {
-                method: 'POST',
-                body: formData
-            });
-            const result = await res.json();
+            try {
+                const res = await fetch('/api/animals', {
+                    method: 'POST',
+                    body: formData
+                });
+                const result = await res.json();
 
-            if (res.ok) {
-                msgDiv.className = 'message success';
-                msgDiv.textContent = '✅ Animal added successfully!';
-                msgDiv.style.display = 'block';
-                document.getElementById('add-animal-form').reset();
-                loadAnimalDropdown();
-                loadStats();
-            } else {
+                if (res.ok) {
+                    msgDiv.className = 'message success';
+                    msgDiv.textContent = '✅ Rescued animal successfully added to the portal!';
+                    msgDiv.style.display = 'block';
+                    document.getElementById('add-animal-form').reset();
+                    loadAnimalDropdown();
+                    loadStats();
+                } else {
+                    msgDiv.className = 'message error';
+                    msgDiv.textContent = '❌ ' + result.message;
+                    msgDiv.style.display = 'block';
+                }
+            } catch (err) {
                 msgDiv.className = 'message error';
-                msgDiv.textContent = '❌ ' + result.message;
+                msgDiv.textContent = '❌ Failed to submit animal details. Please check connection.';
                 msgDiv.style.display = 'block';
             }
         });
 
+        // Add Medical Log
         async function addMedicalLog() {
             const animalId = document.getElementById('med-animal').value;
             const note = document.getElementById('med-note').value;
             const msgDiv = document.getElementById('med-message');
+            msgDiv.style.display = 'none';
 
-            if (!note.trim()) {
+            if (!animalId) {
                 msgDiv.className = 'message error';
-                msgDiv.textContent = '❌ Please enter a medical note.';
+                msgDiv.textContent = '❌ Please select an animal first.';
                 msgDiv.style.display = 'block';
                 return;
             }
 
-            const res = await fetch(`/api/animals/${animalId}/medical`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ note })
-            });
-
-            if (res.ok) {
-                msgDiv.className = 'message success';
-                msgDiv.textContent = '✅ Medical log added!';
-                msgDiv.style.display = 'block';
-                document.getElementById('med-note').value = '';
-            } else {
+            if (!note.trim()) {
                 msgDiv.className = 'message error';
-                msgDiv.textContent = '❌ Failed to add log.';
+                msgDiv.textContent = '❌ Please write a medical note.';
+                msgDiv.style.display = 'block';
+                return;
+            }
+
+            try {
+                const res = await fetch(`/api/animals/${animalId}/medical`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ note })
+                });
+                const result = await res.json();
+
+                if (res.ok) {
+                    msgDiv.className = 'message success';
+                    msgDiv.textContent = '✅ Medical record updated successfully!';
+                    msgDiv.style.display = 'block';
+                    document.getElementById('med-note').value = '';
+                } else {
+                    msgDiv.className = 'message error';
+                    msgDiv.textContent = '❌ ' + result.message;
+                    msgDiv.style.display = 'block';
+                }
+            } catch (err) {
+                msgDiv.className = 'message error';
+                msgDiv.textContent = '❌ Failed to record medical log.';
                 msgDiv.style.display = 'block';
             }
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str).replace(/[&<>"']/g, s => ({
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#39;'
+            }[s]));
         }
 
         checkAccess();

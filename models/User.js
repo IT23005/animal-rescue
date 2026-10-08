@@ -11,7 +11,8 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true,
         unique: true,
-        lowercase: true
+        lowercase: true,
+        trim: true
     },
     password: {
         type: String,
@@ -23,10 +24,12 @@ const userSchema = new mongoose.Schema({
         default: 'public'
     },
     phone: {
-        type: String
+        type: String,
+        trim: true
     },
     address: {
-        type: String
+        type: String,
+        trim: true
     },
     createdAt: {
         type: Date,
