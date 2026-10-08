@@ -384,8 +384,10 @@ This project is built to deploy out-of-the-box on **Vercel**:
 ## Academic Assessment Information
 
 - **Course**: Web Application Development Lab
+- **Course Code**: ICT-3204
+- **Course Teacher**: Md. Anowar Kabir
 - **Project Title**: Animal Rescue & Shelter Management System
 - **Student ID**: IT23005
-- **Developer**: Mahfuzur Rahman
+- **Student Name**: Mahfuzur Rahman
 - **Repository**: [https://github.com/IT23005/animal-rescue](https://github.com/IT23005/animal-rescue)
 - **Live Deployment**: Deployed on Vercel
