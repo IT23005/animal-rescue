@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/css/style.css?v=20261009-reports">
+    <link rel="stylesheet" href="/css/style.css?v=20261009-admin-feeds">
 </head>
 
 <body>
@@ -77,56 +77,78 @@
 
         <!-- ADOPTION APPLICATIONS TAB -->
         <div id="tab-adoptions" class="tab-content">
-            <div class="table-container">
-                <h3>❤️ Adoption / Foster Applications</h3>
-                <div style="overflow-x:auto;">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Applicant</th>
-                                <th>Contact</th>
-                                <th>Animal</th>
-                                <th>Type</th>
-                                <th>Reason</th>
-                                <th>Date</th>
-                                <th>Status</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody id="adoptions-table">
-                            <tr>
-                                <td colspan="8" style="text-align:center; padding:20px;">Loading...</td>
-                            </tr>
-                        </tbody>
-                    </table>
+            <div class="admin-feed-container">
+                <div class="admin-feed-header">
+                    <div>
+                        <h2 class="admin-feed-title">
+                            <span>❤️ Adoption & Foster Applications</span>
+                            <span id="adoptions-count-pill" class="reports-count-pill">0 Applications</span>
+                        </h2>
+                        <p style="color:#64748b; font-size:14px; margin-top:3px;">
+                            Review adoption and foster requests, candidate home setup, and manage approvals
+                        </p>
+                    </div>
+                    <button class="btn btn-secondary" onclick="loadAdoptions()" style="display:inline-flex; align-items:center; gap:6px; font-size:13px; padding:8px 16px;">
+                        🔄 Refresh
+                    </button>
+                </div>
+
+                <div class="admin-feed-toolbar">
+                    <div class="reports-search-box" style="margin-bottom:0;">
+                        <span class="reports-search-icon">🔍</span>
+                        <input type="text" id="adoption-search" placeholder="Search applicant, animal, or phone..." oninput="renderAdoptions()">
+                    </div>
+                    <div class="admin-feed-filters">
+                        <button class="admin-filter-pill active" data-filter="all" onclick="setAdoptionFilter('all')">All</button>
+                        <button class="admin-filter-pill" data-filter="pending" onclick="setAdoptionFilter('pending')">⚠️ Pending</button>
+                        <button class="admin-filter-pill" data-filter="approved" onclick="setAdoptionFilter('approved')">✅ Approved</button>
+                        <button class="admin-filter-pill" data-filter="rejected" onclick="setAdoptionFilter('rejected')">❌ Rejected</button>
+                    </div>
+                </div>
+
+                <div id="adoptions-feed" class="admin-cards-feed">
+                    <div style="text-align:center; padding:40px; background:white; border-radius:14px; border:1px solid #e2e8f0; color:#64748b;">
+                        Loading adoption applications...
+                    </div>
                 </div>
             </div>
         </div>
 
         <!-- VOLUNTEER APPLICATIONS TAB -->
         <div id="tab-volunteer-apps" class="tab-content" style="display:none;">
-            <div class="table-container">
-                <h3>🤝 Volunteer Applications</h3>
-                <div style="overflow-x:auto;">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Phone</th>
-                                <th>Address</th>
-                                <th>Reason</th>
-                                <th>Date</th>
-                                <th>Status</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody id="volunteer-apps-table">
-                            <tr>
-                                <td colspan="8" style="text-align:center; padding:20px;">Loading...</td>
-                            </tr>
-                        </tbody>
-                    </table>
+            <div class="admin-feed-container">
+                <div class="admin-feed-header">
+                    <div>
+                        <h2 class="admin-feed-title">
+                            <span>🤝 Volunteer Applications</span>
+                            <span id="vol-count-pill" class="reports-count-pill">0 Applications</span>
+                        </h2>
+                        <p style="color:#64748b; font-size:14px; margin-top:3px;">
+                            Evaluate volunteer applicants; approving automatically provisions an active volunteer account
+                        </p>
+                    </div>
+                    <button class="btn btn-secondary" onclick="loadVolunteerApps()" style="display:inline-flex; align-items:center; gap:6px; font-size:13px; padding:8px 16px;">
+                        🔄 Refresh
+                    </button>
+                </div>
+
+                <div class="admin-feed-toolbar">
+                    <div class="reports-search-box" style="margin-bottom:0;">
+                        <span class="reports-search-icon">🔍</span>
+                        <input type="text" id="vol-search" placeholder="Search applicant name, email, or phone..." oninput="renderVolunteerApps()">
+                    </div>
+                    <div class="admin-feed-filters">
+                        <button class="admin-filter-pill active" data-filter="all" onclick="setVolFilter('all')">All</button>
+                        <button class="admin-filter-pill" data-filter="pending" onclick="setVolFilter('pending')">⚠️ Pending</button>
+                        <button class="admin-filter-pill" data-filter="approved" onclick="setVolFilter('approved')">✅ Approved</button>
+                        <button class="admin-filter-pill" data-filter="rejected" onclick="setVolFilter('rejected')">❌ Rejected</button>
+                    </div>
+                </div>
+
+                <div id="volunteer-apps-feed" class="admin-cards-feed">
+                    <div style="text-align:center; padding:40px; background:white; border-radius:14px; border:1px solid #e2e8f0; color:#64748b;">
+                        Loading volunteer applications...
+                    </div>
                 </div>
             </div>
         </div>
@@ -179,27 +201,47 @@
 
         <!-- ALL ANIMALS TAB -->
         <div id="tab-animals" class="tab-content" style="display:none;">
-            <div class="table-container">
-                <h3>🐾 All Animals</h3>
-                <div style="overflow-x:auto;">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Species</th>
-                                <th>Age</th>
-                                <th>Health</th>
-                                <th>Status</th>
-                                <th>Added</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody id="admin-animals-table">
-                            <tr>
-                                <td colspan="7" style="text-align:center; padding:20px;">Loading...</td>
-                            </tr>
-                        </tbody>
-                    </table>
+            <div class="admin-feed-container">
+                <div class="admin-feed-header">
+                    <div>
+                        <h2 class="admin-feed-title">
+                            <span>🐾 All Rescued Animals</span>
+                            <span id="animals-count-pill" class="reports-count-pill">0 Animals</span>
+                        </h2>
+                        <p style="color:#64748b; font-size:14px; margin-top:3px;">
+                            Shelter roster — track health status, medical history, adoption readiness, and animal profiles
+                        </p>
+                    </div>
+                    <button class="btn btn-secondary" onclick="loadAdminAnimals()" style="display:inline-flex; align-items:center; gap:6px; font-size:13px; padding:8px 16px;">
+                        🔄 Refresh
+                    </button>
+                </div>
+
+                <div class="admin-feed-toolbar">
+                    <div class="reports-search-box" style="margin-bottom:0;">
+                        <span class="reports-search-icon">🔍</span>
+                        <input type="text" id="animal-search" placeholder="Search animal by name..." oninput="renderAdminAnimals()">
+                    </div>
+                    <div class="admin-feed-filters">
+                        <button class="admin-filter-pill active" data-filter="all" onclick="setAnimalFilter('all')">All</button>
+                        <button class="admin-filter-pill" data-filter="available" onclick="setAnimalFilter('available')">Available</button>
+                        <button class="admin-filter-pill" data-filter="pending" onclick="setAnimalFilter('pending')">Pending</button>
+                        <button class="admin-filter-pill" data-filter="adopted" onclick="setAnimalFilter('adopted')">Adopted</button>
+
+                        <select id="animal-species-filter" class="reports-filter-select" onchange="renderAdminAnimals()">
+                            <option value="all">All Species</option>
+                            <option value="dog">🐕 Dogs</option>
+                            <option value="cat">🐈 Cats</option>
+                            <option value="bird">🐦 Birds</option>
+                            <option value="other">🐾 Other</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div id="admin-animals-feed" class="admin-cards-feed">
+                    <div style="text-align:center; padding:40px; background:white; border-radius:14px; border:1px solid #e2e8f0; color:#64748b;">
+                        Loading animal profiles...
+                    </div>
                 </div>
             </div>
         </div>
@@ -349,10 +391,19 @@
         <p>🐾 Animal Rescue & Adoption Portal</p>
     </footer>
 
-    <script src="/js/main.js?v=20261009-reports"></script>
+    <script src="/js/main.js?v=20261009-admin-feeds"></script>
     <script>
         let allReports = [];
         let currentAdminReportFilter = 'all';
+
+        let allAdoptions = [];
+        let currentAdoptionFilter = 'all';
+
+        let allVolunteerApps = [];
+        let currentVolFilter = 'all';
+
+        let allAdminAnimals = [];
+        let currentAnimalFilter = 'all';
 
         async function checkAccess() {
             const res = await fetch('/api/auth/me');
@@ -404,101 +455,314 @@
             }
         }
 
+        /* ============================================================
+           ADOPTION & FOSTER APPLICATIONS ENGINE
+           ============================================================ */
         async function loadAdoptions() {
-            const res = await fetch('/api/applications');
-            const apps = await res.json();
-            const tbody = document.getElementById('adoptions-table');
-
-            if (!apps.length) {
-                tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding:20px;">No applications yet.</td></tr>';
-                return;
-            }
-
-            tbody.innerHTML = apps.map(app => `
-                <tr>
-                    <td><strong>${app.applicantName}</strong></td>
-                    <td>
-                        📞 ${app.applicantPhone}<br>
-                        <small>${app.applicantEmail || ''}</small><br>
-                        <small>📍 ${app.applicantAddress}</small>
-                    </td>
-                    <td>${app.animal?.name || app.animalName || 'N/A'}</td>
-                    <td><span class="badge badge-available">${app.type}</span></td>
-                    <td style="max-width:150px; overflow:hidden; text-overflow:ellipsis;
-                        white-space:nowrap;" title="${app.reason}">${app.reason}</td>
-                    <td>${new Date(app.createdAt).toLocaleDateString()}</td>
-                    <td>
-                        <span class="badge ${app.status === 'pending' ? 'badge-pending' :
-                    app.status === 'approved' ? 'badge-available' : 'badge-critical'}">
-                            ${app.status}
-                        </span>
-                        ${app.reviewerName ?
-                    `<br><small style="color:#777;">By: ${app.reviewerName}</small>` : ''}
-                    </td>
-                    <td>
-                        ${app.status === 'pending' ?
-                    `<button class="btn btn-primary"
-                                style="padding:6px 12px; font-size:13px;"
-                                onclick="openAdoptionReview('${app._id}',
-                                    '${app.applicantName}',
-                                    '${app.animal?.name || app.animalName}',
-                                    '${app.type}',
-                                    '${app.applicantPhone}',
-                                    '${app.applicantAddress}')">
-                                Review
-                            </button>` :
-                    `<span style="color:#777; font-size:13px;">
-                                ${app.status === 'approved' ? '✅ Approved' : '❌ Rejected'}
-                            </span>`
+            const feed = document.getElementById('adoptions-feed');
+            try {
+                const res = await fetch('/api/applications');
+                if (!res.ok) throw new Error('Failed to fetch applications');
+                allAdoptions = await res.json();
+                renderAdoptions();
+            } catch (err) {
+                if (feed) {
+                    feed.innerHTML = '<div style="text-align:center; padding:30px; background:white; border-radius:12px; color:#ef4444;">❌ Failed to load applications. Please refresh.</div>';
                 }
-                    </td>
-                </tr>
-            `).join('');
+            }
         }
 
-        async function loadVolunteerApps() {
-            const res = await fetch('/api/auth/volunteer-applications');
-            const apps = await res.json();
-            const tbody = document.getElementById('volunteer-apps-table');
+        function setAdoptionFilter(filter) {
+            currentAdoptionFilter = filter;
+            document.querySelectorAll('#tab-adoptions .admin-filter-pill').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.filter === filter);
+            });
+            renderAdoptions();
+        }
 
-            if (!apps.length) {
-                tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding:20px;">No volunteer applications yet.</td></tr>';
+        function renderAdoptions() {
+            const feed = document.getElementById('adoptions-feed');
+            const countPill = document.getElementById('adoptions-count-pill');
+            if (!feed) return;
+
+            const searchInput = (document.getElementById('adoption-search')?.value || '').trim().toLowerCase();
+
+            const filtered = allAdoptions.filter(app => {
+                if (currentAdoptionFilter !== 'all' && app.status !== currentAdoptionFilter) {
+                    return false;
+                }
+                if (searchInput) {
+                    const petName = (app.animal?.name || app.animalName || '').toLowerCase();
+                    const applicant = (app.applicantName || '').toLowerCase();
+                    const phone = (app.applicantPhone || '').toLowerCase();
+                    const email = (app.applicantEmail || '').toLowerCase();
+                    if (!petName.includes(searchInput) && !applicant.includes(searchInput) && !phone.includes(searchInput) && !email.includes(searchInput)) {
+                        return false;
+                    }
+                }
+                return true;
+            });
+
+            if (countPill) {
+                const pending = allAdoptions.filter(a => a.status === 'pending').length;
+                countPill.textContent = `${filtered.length} Displayed • ${pending} Pending`;
+            }
+
+            if (!filtered || filtered.length === 0) {
+                feed.innerHTML = `
+                    <div style="text-align:center; padding:45px 20px; background:white; border-radius:14px; border:1px solid #e2e8f0; color:#64748b;">
+                        <div style="font-size:36px; margin-bottom:10px;">📋</div>
+                        <h4 style="font-size:16px; color:#1e293b; margin-bottom:4px;">No Applications Match</h4>
+                        <p style="font-size:13.5px; margin:0;">Try switching filters or clearing your search query.</p>
+                    </div>
+                `;
                 return;
             }
 
-            tbody.innerHTML = apps.map(app => `
-                <tr>
-                    <td><strong>${app.name}</strong></td>
-                    <td>${app.email}</td>
-                    <td>${app.phone}</td>
-                    <td>${app.address}</td>
-                    <td style="max-width:150px; overflow:hidden; text-overflow:ellipsis;
-                        white-space:nowrap;" title="${app.reason}">${app.reason}</td>
-                    <td>${new Date(app.createdAt).toLocaleDateString()}</td>
-                    <td>
-                        <span class="badge ${app.status === 'pending' ? 'badge-pending' :
-                    app.status === 'approved' ? 'badge-available' : 'badge-critical'}">
-                            ${app.status}
-                        </span>
-                        ${app.reviewerName ?
-                    `<br><small style="color:#777;">By: ${app.reviewerName}</small>` : ''}
-                    </td>
-                    <td>
-                        ${app.status === 'pending' ?
-                    `<button class="btn btn-primary"
-                                style="padding:6px 12px; font-size:13px;"
-                                onclick="openVolReview('${app._id}',
-                                    '${app.name}', '${app.email}',
-                                    '${app.phone}', '${app.reason}')">
-                                Review
-                            </button>` :
-                    `<span style="color:#777; font-size:13px;">
-                                ${app.status === 'approved' ? '✅ Approved' : '❌ Rejected'}
-                            </span>`
+            feed.innerHTML = filtered.map(app => {
+                const petName = escapeHtml(app.animal?.name || app.animalName || 'Rescue Animal');
+                const petSpecies = app.animal?.species ? `(${escapeHtml(app.animal.species)})` : '';
+                const safeName = escapeHtml(app.applicantName || 'Anonymous');
+                const safePhone = escapeHtml(app.applicantPhone || 'N/A');
+                const safeEmail = escapeHtml(app.applicantEmail || '');
+                const safeAddress = escapeHtml(app.applicantAddress || 'N/A');
+                const safeReason = escapeHtml(app.reason || 'No specific motivation details provided.');
+                const safeReviewNote = escapeHtml(app.reviewNote || '');
+                const isAdoption = (app.type || 'adoption') === 'adoption';
+                const typeClass = isAdoption ? 'badge-type-adoption' : 'badge-type-foster';
+                const typeLabel = isAdoption ? '🐾 Adoption' : '🏡 Foster';
+
+                let statusBadgeClass = 'badge-pending';
+                let statusLabel = '⚠️ Pending Review';
+                if (app.status === 'approved') {
+                    statusBadgeClass = 'badge-healthy';
+                    statusLabel = '✅ Approved';
+                } else if (app.status === 'rejected') {
+                    statusBadgeClass = 'badge-critical';
+                    statusLabel = '❌ Rejected';
                 }
-                    </td>
-                </tr>
-            `).join('');
+
+                return `
+                    <div class="admin-card status-${app.status}">
+                        <!-- Header -->
+                        <div class="admin-card-header">
+                            <div class="admin-card-title-group">
+                                <span class="admin-card-name">${safeName}</span>
+                                <span class="admin-card-badge ${typeClass}">${typeLabel}</span>
+                                <span style="font-size:13.5px; color:#475569;">for <strong>${petName}</strong> <small style="color:#64748b;">${petSpecies}</small></span>
+                            </div>
+                            <div style="display:flex; align-items:center; gap:10px;">
+                                <span class="badge ${statusBadgeClass}">${statusLabel}</span>
+                                <span class="admin-card-date">📅 ${formatReportDate(app.createdAt)}</span>
+                            </div>
+                        </div>
+
+                        <!-- Contact Strip -->
+                        <div class="admin-contact-strip">
+                            <div class="admin-contact-col">
+                                <span class="label">📞 Phone</span>
+                                <span class="val"><a href="tel:${safePhone}">${safePhone}</a></span>
+                            </div>
+                            <div class="admin-contact-col">
+                                <span class="label">✉️ Email</span>
+                                <span class="val">${safeEmail ? `<a href="mailto:${safeEmail}">${safeEmail}</a>` : 'Not provided'}</span>
+                            </div>
+                            <div class="admin-contact-col">
+                                <span class="label">📍 Address</span>
+                                <span class="val">${safeAddress}</span>
+                            </div>
+                        </div>
+
+                        <!-- Applicant Environment Meta -->
+                        <div class="admin-meta-tags">
+                            <span class="admin-meta-tag">🏠 Residence: <strong>${escapeHtml(app.homeType || 'House')}</strong></span>
+                            <span class="admin-meta-tag">🐾 Other Pets: <strong>${app.hasOtherPets ? 'Yes' : 'None'}</strong></span>
+                            ${app.experience ? `<span class="admin-meta-tag">💼 Prior Pet Care: <strong>${escapeHtml(app.experience)}</strong></span>` : ''}
+                        </div>
+
+                        <!-- Motivation Box -->
+                        <div class="admin-reason-box">
+                            <div class="admin-reason-label">Motivation & Care Commitment:</div>
+                            <div>${safeReason}</div>
+                        </div>
+
+                        <!-- Reviewer note if present -->
+                        ${app.status !== 'pending' ? `
+                            <div style="font-size:12.5px; color:#475569; background:#f1f5f9; border-radius:8px; padding:10px 14px;">
+                                <strong>Decision Note:</strong> ${safeReviewNote || '<em>No specific reviewer remarks recorded.</em>'}
+                                ${app.reviewerName ? `<span style="margin-left:8px; color:#64748b;">(By: <strong>${escapeHtml(app.reviewerName)}</strong>)</span>` : ''}
+                            </div>
+                        ` : ''}
+
+                        <!-- Actions Strip -->
+                        <div class="admin-card-actions">
+                            <div>
+                                ${app.status === 'pending' ? `
+                                    <button class="btn btn-primary" style="padding:7px 16px; font-size:13px;" onclick="openAdoptionReview('${app._id}')">
+                                        📋 Review & Decide
+                                    </button>
+                                ` : `
+                                    <button class="btn btn-secondary" style="padding:6px 14px; font-size:12.5px;" onclick="openAdoptionReview('${app._id}')">
+                                        ✏️ Update Decision
+                                    </button>
+                                `}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        /* ============================================================
+           VOLUNTEER APPLICATIONS ENGINE
+           ============================================================ */
+        async function loadVolunteerApps() {
+            const feed = document.getElementById('volunteer-apps-feed');
+            try {
+                const res = await fetch('/api/auth/volunteer-applications');
+                if (!res.ok) throw new Error('Failed to fetch volunteer applications');
+                allVolunteerApps = await res.json();
+                renderVolunteerApps();
+            } catch (err) {
+                if (feed) {
+                    feed.innerHTML = '<div style="text-align:center; padding:30px; background:white; border-radius:12px; color:#ef4444;">❌ Failed to load volunteer applications.</div>';
+                }
+            }
+        }
+
+        function setVolFilter(filter) {
+            currentVolFilter = filter;
+            document.querySelectorAll('#tab-volunteer-apps .admin-filter-pill').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.filter === filter);
+            });
+            renderVolunteerApps();
+        }
+
+        function renderVolunteerApps() {
+            const feed = document.getElementById('volunteer-apps-feed');
+            const countPill = document.getElementById('vol-count-pill');
+            if (!feed) return;
+
+            const searchInput = (document.getElementById('vol-search')?.value || '').trim().toLowerCase();
+
+            const filtered = allVolunteerApps.filter(app => {
+                if (currentVolFilter !== 'all' && app.status !== currentVolFilter) {
+                    return false;
+                }
+                if (searchInput) {
+                    const name = (app.name || '').toLowerCase();
+                    const email = (app.email || '').toLowerCase();
+                    const phone = (app.phone || '').toLowerCase();
+                    const address = (app.address || '').toLowerCase();
+                    if (!name.includes(searchInput) && !email.includes(searchInput) && !phone.includes(searchInput) && !address.includes(searchInput)) {
+                        return false;
+                    }
+                }
+                return true;
+            });
+
+            if (countPill) {
+                const pending = allVolunteerApps.filter(a => a.status === 'pending').length;
+                countPill.textContent = `${filtered.length} Displayed • ${pending} Pending`;
+            }
+
+            if (!filtered || filtered.length === 0) {
+                feed.innerHTML = `
+                    <div style="text-align:center; padding:45px 20px; background:white; border-radius:14px; border:1px solid #e2e8f0; color:#64748b;">
+                        <div style="font-size:36px; margin-bottom:10px;">🤝</div>
+                        <h4 style="font-size:16px; color:#1e293b; margin-bottom:4px;">No Volunteer Applications Match</h4>
+                        <p style="font-size:13.5px; margin:0;">Try switching filters or clearing your search query.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            feed.innerHTML = filtered.map(app => {
+                const safeName = escapeHtml(app.name || 'Anonymous');
+                const safeEmail = escapeHtml(app.email || 'N/A');
+                const safePhone = escapeHtml(app.phone || 'N/A');
+                const safeAddress = escapeHtml(app.address || 'N/A');
+                const safeReason = escapeHtml(app.reason || 'No statement provided.');
+                const safeExp = escapeHtml(app.experience || '');
+
+                let statusBadgeClass = 'badge-pending';
+                let statusLabel = '⚠️ Pending Review';
+                if (app.status === 'approved') {
+                    statusBadgeClass = 'badge-healthy';
+                    statusLabel = '✅ Approved Volunteer';
+                } else if (app.status === 'rejected') {
+                    statusBadgeClass = 'badge-critical';
+                    statusLabel = '❌ Rejected';
+                }
+
+                return `
+                    <div class="admin-card status-${app.status}">
+                        <!-- Header -->
+                        <div class="admin-card-header">
+                            <div class="admin-card-title-group">
+                                <span class="admin-card-name">${safeName}</span>
+                                <span class="admin-card-badge" style="background:#f0fdf4; color:#15803d; border:1px solid #bbf7d0;">
+                                    🤝 Volunteer Candidate
+                                </span>
+                            </div>
+                            <div style="display:flex; align-items:center; gap:10px;">
+                                <span class="badge ${statusBadgeClass}">${statusLabel}</span>
+                                <span class="admin-card-date">📅 ${formatReportDate(app.createdAt)}</span>
+                            </div>
+                        </div>
+
+                        <!-- Contact Strip -->
+                        <div class="admin-contact-strip">
+                            <div class="admin-contact-col">
+                                <span class="label">📞 Phone (Login ID)</span>
+                                <span class="val"><a href="tel:${safePhone}">${safePhone}</a></span>
+                            </div>
+                            <div class="admin-contact-col">
+                                <span class="label">✉️ Email</span>
+                                <span class="val"><a href="mailto:${safeEmail}">${safeEmail}</a></span>
+                            </div>
+                            <div class="admin-contact-col">
+                                <span class="label">📍 Address</span>
+                                <span class="val">${safeAddress}</span>
+                            </div>
+                        </div>
+
+                        ${safeExp ? `
+                            <div class="admin-meta-tags">
+                                <span class="admin-meta-tag">💼 Relevant Experience: <strong>${safeExp}</strong></span>
+                            </div>
+                        ` : ''}
+
+                        <!-- Reason Box -->
+                        <div class="admin-reason-box">
+                            <div class="admin-reason-label">Motivation to Volunteer:</div>
+                            <div>${safeReason}</div>
+                        </div>
+
+                        ${app.status === 'approved' ? `
+                            <div style="font-size:12.5px; color:#166534; background:#f0fdf4; border:1px solid #bbf7d0; border-radius:8px; padding:10px 14px;">
+                                ✅ Volunteer credentials active. Registered Phone: <strong>${safePhone}</strong>.
+                                ${app.reviewerName ? `<span style="color:#15803d; margin-left:6px;">(Approved by: <strong>${escapeHtml(app.reviewerName)}</strong>)</span>` : ''}
+                            </div>
+                        ` : ''}
+
+                        <!-- Actions -->
+                        <div class="admin-card-actions">
+                            <div>
+                                ${app.status === 'pending' ? `
+                                    <button class="btn btn-primary" style="padding:7px 16px; font-size:13px;" onclick="openVolReview('${app._id}')">
+                                        📋 Review Application
+                                    </button>
+                                ` : `
+                                    <button class="btn btn-secondary" style="padding:6px 14px; font-size:12.5px;" onclick="openVolReview('${app._id}')">
+                                        ✏️ Update Decision
+                                    </button>
+                                `}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
         }
 
         async function loadReports() {
@@ -839,43 +1103,152 @@
             }[s]));
         }
 
+        /* ============================================================
+           ALL ANIMALS ENGINE
+           ============================================================ */
         async function loadAdminAnimals() {
-            const res = await fetch('/api/animals?status=all');
-            const animals = await res.json();
-            const tbody = document.getElementById('admin-animals-table');
+            const feed = document.getElementById('admin-animals-feed');
+            try {
+                const res = await fetch('/api/animals?status=all');
+                if (!res.ok) throw new Error('Failed to fetch animals');
+                allAdminAnimals = await res.json();
+                renderAdminAnimals();
+            } catch (err) {
+                if (feed) {
+                    feed.innerHTML = '<div style="text-align:center; padding:30px; background:white; border-radius:12px; color:#ef4444;">❌ Failed to load animals.</div>';
+                }
+            }
+        }
 
-            if (!animals.length) {
-                tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:20px;">No animals yet.</td></tr>';
+        function setAnimalFilter(filter) {
+            currentAnimalFilter = filter;
+            document.querySelectorAll('#tab-animals .admin-filter-pill').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.filter === filter);
+            });
+            renderAdminAnimals();
+        }
+
+        function renderAdminAnimals() {
+            const feed = document.getElementById('admin-animals-feed');
+            const countPill = document.getElementById('animals-count-pill');
+            if (!feed) return;
+
+            const searchInput = (document.getElementById('animal-search')?.value || '').trim().toLowerCase();
+            const speciesFilter = document.getElementById('animal-species-filter')?.value || 'all';
+
+            const filtered = allAdminAnimals.filter(a => {
+                if (currentAnimalFilter !== 'all' && a.status !== currentAnimalFilter) {
+                    return false;
+                }
+                if (speciesFilter !== 'all' && (a.species || '').toLowerCase() !== speciesFilter.toLowerCase()) {
+                    return false;
+                }
+                if (searchInput) {
+                    const name = (a.name || '').toLowerCase();
+                    const desc = (a.description || '').toLowerCase();
+                    if (!name.includes(searchInput) && !desc.includes(searchInput)) {
+                        return false;
+                    }
+                }
+                return true;
+            });
+
+            if (countPill) {
+                countPill.textContent = `${filtered.length} Displayed • ${allAdminAnimals.length} Total`;
+            }
+
+            if (!filtered || filtered.length === 0) {
+                feed.innerHTML = `
+                    <div style="text-align:center; padding:45px 20px; background:white; border-radius:14px; border:1px solid #e2e8f0; color:#64748b;">
+                        <div style="font-size:36px; margin-bottom:10px;">🐾</div>
+                        <h4 style="font-size:16px; color:#1e293b; margin-bottom:4px;">No Rescued Animals Match</h4>
+                        <p style="font-size:13.5px; margin:0;">Try switching filters or clearing your search query.</p>
+                    </div>
+                `;
                 return;
             }
 
-            tbody.innerHTML = animals.map(a => `
-                <tr>
-                    <td><strong>${a.name}</strong></td>
-                    <td>${a.species}</td>
-                    <td>${a.age || 'N/A'}</td>
-                    <td>
-                        <span class="badge ${a.healthStatus === 'healthy' ?
-                    'badge-available' : 'badge-pending'}">
-                            ${a.healthStatus}
-                        </span>
-                    </td>
-                    <td>
-                        <span class="badge ${a.status === 'available' ? 'badge-available' :
-                    a.status === 'adopted' ? 'badge-adopted' : 'badge-pending'}">
-                            ${a.status}
-                        </span>
-                    </td>
-                    <td>${new Date(a.createdAt).toLocaleDateString()}</td>
-                    <td>
-                        <button class="btn btn-danger"
-                            style="padding:6px 12px; font-size:13px;"
-                            onclick="deleteAnimal('${a._id}', '${a.name}')">
-                            Delete
-                        </button>
-                    </td>
-                </tr>
-            `).join('');
+            feed.innerHTML = filtered.map(a => {
+                const safeName = escapeHtml(a.name || 'Unnamed');
+                const safeSpecies = escapeHtml(a.species || 'other');
+                const safeAge = escapeHtml(a.age || 'N/A');
+                const safeGender = escapeHtml(a.gender || 'unknown');
+                const safeDesc = escapeHtml(a.description || 'No detailed background provided.');
+                const medLogsCount = a.medicalLogs?.length || 0;
+
+                let healthBadge = 'badge-healthy';
+                let healthLabel = '💚 Healthy';
+                if (a.healthStatus === 'needs treatment') {
+                    healthBadge = 'badge-treatment';
+                    healthLabel = '⚠️ Needs Treatment';
+                } else if (a.healthStatus === 'critical') {
+                    healthBadge = 'badge-critical';
+                    healthLabel = '🚨 Critical Care';
+                }
+
+                let statusBadge = 'badge-available';
+                let statusLabel = '✅ Available';
+                if (a.status === 'pending') {
+                    statusBadge = 'badge-pending';
+                    statusLabel = '⏳ Adoption Pending';
+                } else if (a.status === 'adopted') {
+                    statusBadge = 'badge-adopted';
+                    statusLabel = '🏡 Happily Adopted';
+                }
+
+                const genderSymbol = safeGender === 'male' ? '♂ Male' : safeGender === 'female' ? '♀ Female' : '🐾 Unknown Gender';
+
+                const imgHtml = a.image ? `
+                    <div class="admin-animal-thumb" onclick="openLightbox('${a.image}', '${safeName}', '${safeSpecies} • ${safeAge}')" style="cursor:pointer;" title="Click to view full photo">
+                        <img src="${a.image}" class="admin-animal-img" alt="${safeName}">
+                    </div>
+                ` : `
+                    <div class="admin-animal-thumb">
+                        <div class="admin-animal-no-img">
+                            <span style="font-size:36px;">${getSpeciesEmoji(a.species).split(' ')[0]}</span>
+                            <span style="font-size:11px; font-weight:600;">No Photo</span>
+                        </div>
+                    </div>
+                `;
+
+                return `
+                    <div class="admin-card status-${a.status}">
+                        <div class="admin-animal-card">
+                            ${imgHtml}
+                            <div class="admin-animal-body">
+                                <div>
+                                    <div class="admin-card-header" style="margin-bottom:8px; padding-bottom:8px;">
+                                        <div class="admin-card-title-group">
+                                            <span class="admin-card-name">${safeName}</span>
+                                            <span class="report-species-pill">${getSpeciesEmoji(a.species)}</span>
+                                            <span class="admin-meta-tag" style="padding:2px 8px; font-size:12px;">${genderSymbol}</span>
+                                            <span class="admin-meta-tag" style="padding:2px 8px; font-size:12px;">🎂 ${safeAge}</span>
+                                        </div>
+                                        <span class="admin-card-date">Sheltered: ${new Date(a.createdAt).toLocaleDateString()}</span>
+                                    </div>
+
+                                    <div class="admin-meta-tags" style="margin-bottom:8px;">
+                                        <span class="badge ${statusBadge}">${statusLabel}</span>
+                                        <span class="badge ${healthBadge}">${healthLabel}</span>
+                                        <span class="admin-meta-tag">💉 <strong>${medLogsCount}</strong> Medical ${medLogsCount === 1 ? 'Record' : 'Records'}</span>
+                                    </div>
+
+                                    <p style="font-size:13.5px; color:#475569; line-height:1.5; margin:0; word-break:break-word;">
+                                        ${safeDesc}
+                                    </p>
+                                </div>
+
+                                <div class="admin-card-actions" style="margin-top:4px;">
+                                    <div></div>
+                                    <button class="btn btn-danger" style="padding:6px 14px; font-size:12.5px;" onclick="deleteAnimal('${a._id}', '${safeName}')">
+                                        🗑️ Delete Animal
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
         }
 
         async function loadUsers() {
@@ -914,27 +1287,40 @@
         }
 
         // Modal functions
-        function openAdoptionReview(id, name, animal, type, phone, address) {
+        function openAdoptionReview(id) {
+            const app = allAdoptions.find(a => a._id === id);
             document.getElementById('review-app-id').value = id;
-            document.getElementById('review-details').innerHTML = `
-                <p><strong>Applicant:</strong> ${name}</p>
-                <p><strong>Phone:</strong> ${phone}</p>
-                <p><strong>Address:</strong> ${address}</p>
-                <p><strong>Animal:</strong> ${animal}</p>
-                <p><strong>Type:</strong> ${type}</p>
-            `;
+            if (app) {
+                document.getElementById('review-details').innerHTML = `
+                    <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:14px; font-size:13.5px; line-height:1.6;">
+                        <p><strong>Applicant:</strong> ${escapeHtml(app.applicantName)}</p>
+                        <p><strong>Contact:</strong> 📞 ${escapeHtml(app.applicantPhone)} ${app.applicantEmail ? `| ✉️ ${escapeHtml(app.applicantEmail)}` : ''}</p>
+                        <p><strong>Address:</strong> 📍 ${escapeHtml(app.applicantAddress)}</p>
+                        <p><strong>Animal:</strong> 🐾 ${escapeHtml(app.animal?.name || app.animalName || 'Rescue Animal')} (${escapeHtml(app.type || 'adoption')})</p>
+                        <p><strong>Living Setup:</strong> ${escapeHtml(app.homeType || 'House')} | Other pets: ${app.hasOtherPets ? 'Yes' : 'No'}</p>
+                        ${app.experience ? `<p><strong>Prior Experience:</strong> ${escapeHtml(app.experience)}</p>` : ''}
+                        <p><strong>Motivation:</strong> ${escapeHtml(app.reason || 'None specified')}</p>
+                    </div>
+                `;
+            }
             document.getElementById('review-modal').style.display = 'flex';
             document.getElementById('review-overlay').style.display = 'block';
         }
 
-        function openVolReview(id, name, email, phone, reason) {
+        function openVolReview(id) {
+            const app = allVolunteerApps.find(a => a._id === id);
             document.getElementById('vol-app-id').value = id;
-            document.getElementById('vol-details').innerHTML = `
-                <p><strong>Name:</strong> ${name}</p>
-                <p><strong>Email:</strong> ${email}</p>
-                <p><strong>Phone:</strong> ${phone}</p>
-                <p><strong>Reason:</strong> ${reason}</p>
-            `;
+            if (app) {
+                document.getElementById('vol-details').innerHTML = `
+                    <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:14px; font-size:13.5px; line-height:1.6;">
+                        <p><strong>Candidate:</strong> ${escapeHtml(app.name)}</p>
+                        <p><strong>Contact:</strong> 📞 ${escapeHtml(app.phone)} | ✉️ ${escapeHtml(app.email)}</p>
+                        <p><strong>Address:</strong> 📍 ${escapeHtml(app.address)}</p>
+                        ${app.experience ? `<p><strong>Experience:</strong> ${escapeHtml(app.experience)}</p>` : ''}
+                        <p><strong>Motivation:</strong> ${escapeHtml(app.reason || 'None specified')}</p>
+                    </div>
+                `;
+            }
             document.getElementById('vol-modal').style.display = 'flex';
             document.getElementById('vol-overlay').style.display = 'block';
         }
