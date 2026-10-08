@@ -11,15 +11,16 @@
 <body>
 
     <nav class="navbar">
-        <div class="nav-brand"><a href="/index.html">🐾 Animal Rescue</a></div>
+        <div class="nav-brand"><a href="/">🐾 Animal Rescue</a></div>
         <div class="nav-links">
-            <a href="/index.html">Home</a>
-            <a href="/index.html#available-animals">Browse Animals</a>
-            <a href="/report.html">Report Stray</a>
-            <!--<span id="admin-link"></span>
-        <span id="volunteer-link"></span>-->
+            <a href="/">Home</a>
+            <a href="/animals">Browse Animals</a>
+            <a href="/report">Report Stray</a>
+            <a href="/volunteer">Volunteer Panel</a>
+            <span id="admin-link"></span>
+            <span id="volunteer-link"></span>
             <span id="dashboard-link"></span>
-            <a href="/login.html" id="nav-login">Login</a>
+            <a href="/login" id="nav-login" style="display:none">Login</a>
             <span id="nav-user"></span>
             <a href="#" id="nav-logout" style="display:none" onclick="logout()">Logout</a>
         </div>
@@ -196,6 +197,9 @@
         async function checkAccess() {
             const res = await fetch('/api/auth/me');
             const data = await res.json();
+            const dashboardLink = document.getElementById('dashboard-link');
+
+            if (dashboardLink) dashboardLink.innerHTML = '';
 
             if (!data.loggedIn) {
                 window.location.href = '/login.html';
