@@ -351,7 +351,7 @@ Open your browser and navigate to: **`http://localhost:3000`**
 
 ---
 
-## ⚙️ Environment Variables
+## Environment Variables
 
 | Variable | Required | Description | Example |
 | :--- | :---: | :--- | :--- |
