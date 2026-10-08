@@ -70,28 +70,38 @@
 
         <!-- APPLICATIONS TAB -->
         <div id="tab-applications" class="tab-content">
-            <div class="table-container">
-                <h3>Adoption & Foster Applications</h3>
-                <div style="overflow-x:auto;">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Applicant</th>
-                                <th>Contact & Location</th>
-                                <th>Animal</th>
-                                <th>Type</th>
-                                <th>Reason</th>
-                                <th>Date</th>
-                                <th>Status</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody id="applications-table">
-                            <tr>
-                                <td colspan="8" style="text-align:center; padding:25px;">Loading applications...</td>
-                            </tr>
-                        </tbody>
-                    </table>
+            <div class="admin-feed-container">
+                <div class="admin-feed-header">
+                    <div>
+                        <h2 class="admin-feed-title">
+                            <span>Adoption & Foster Applications</span>
+                            <span id="adoptions-count-pill" class="reports-count-pill">0 Applications</span>
+                        </h2>
+                        <p style="color:#64748b; font-size:14px; margin-top:3px;">
+                            Review adoption and foster requests, candidate home setup, and manage approvals
+                        </p>
+                    </div>
+                    <button class="btn btn-secondary" onclick="loadApplications()" style="display:inline-flex; align-items:center; gap:6px; font-size:13px; padding:8px 16px;">
+                        Refresh
+                    </button>
+                </div>
+
+                <div class="admin-feed-toolbar">
+                    <div class="reports-search-box" style="margin-bottom:0;">
+                        <input type="text" id="adoption-search" placeholder="Search applicant, animal, or phone..." oninput="renderApplications()">
+                    </div>
+                    <div class="admin-feed-filters">
+                        <button class="admin-filter-pill active" data-filter="all" onclick="setAdoptionFilter('all')">All</button>
+                        <button class="admin-filter-pill" data-filter="pending" onclick="setAdoptionFilter('pending')">Pending</button>
+                        <button class="admin-filter-pill" data-filter="approved" onclick="setAdoptionFilter('approved')">Approved</button>
+                        <button class="admin-filter-pill" data-filter="rejected" onclick="setAdoptionFilter('rejected')">Rejected</button>
+                    </div>
+                </div>
+
+                <div id="adoptions-feed" class="admin-cards-feed">
+                    <div style="text-align:center; padding:40px; background:white; border-radius:14px; border:1px solid #e2e8f0; color:#64748b;">
+                        Loading adoption applications...
+                    </div>
                 </div>
             </div>
         </div>
@@ -314,57 +324,160 @@
             }
         }
 
+        let currentAdoptionFilter = 'all';
+
         async function loadApplications() {
-            const tbody = document.getElementById('applications-table');
+            const feed = document.getElementById('adoptions-feed');
             try {
                 const res = await fetch('/api/applications');
                 if (!res.ok) throw new Error('Failed to fetch applications');
                 allApplications = await res.json();
+                renderApplications();
+            } catch (err) {
+                if (feed) {
+                    feed.innerHTML = '<div style="text-align:center; padding:30px; background:white; border-radius:12px; color:#ef4444;">Failed to load applications. Please refresh.</div>';
+                }
+            }
+        }
 
-                if (!allApplications || allApplications.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding:25px;">No applications submitted yet.</td></tr>';
-                    return;
+        function setAdoptionFilter(filter) {
+            currentAdoptionFilter = filter;
+            document.querySelectorAll('#tab-applications .admin-filter-pill').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.filter === filter);
+            });
+            renderApplications();
+        }
+
+        function renderApplications() {
+            const feed = document.getElementById('adoptions-feed');
+            const countPill = document.getElementById('adoptions-count-pill');
+            if (!feed) return;
+
+            const searchInput = (document.getElementById('adoption-search')?.value || '').trim().toLowerCase();
+
+            const filtered = allApplications.filter(app => {
+                if (currentAdoptionFilter !== 'all' && app.status !== currentAdoptionFilter) {
+                    return false;
+                }
+                if (searchInput) {
+                    const petName = (app.animal?.name || app.animalName || '').toLowerCase();
+                    const applicant = (app.applicantName || '').toLowerCase();
+                    const phone = (app.applicantPhone || '').toLowerCase();
+                    const email = (app.applicantEmail || '').toLowerCase();
+                    if (!petName.includes(searchInput) && !applicant.includes(searchInput) && !phone.includes(searchInput) && !email.includes(searchInput)) {
+                        return false;
+                    }
+                }
+                return true;
+            });
+
+            if (countPill) {
+                const pending = allApplications.filter(a => a.status === 'pending').length;
+                countPill.textContent = `${filtered.length} Displayed • ${pending} Pending`;
+            }
+
+            if (!filtered || filtered.length === 0) {
+                feed.innerHTML = `
+                    <div style="text-align:center; padding:45px 20px; background:white; border-radius:14px; border:1px solid #e2e8f0; color:#64748b;">
+                        <h4 style="font-size:16px; color:#1e293b; margin-bottom:4px;">No Applications Match</h4>
+                        <p style="font-size:13.5px; margin:0;">Try switching filters or clearing your search query.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            feed.innerHTML = filtered.map(app => {
+                const petName = escapeHtml(app.animal?.name || app.animalName || 'Rescue Animal');
+                const petSpecies = app.animal?.species ? `(${escapeHtml(app.animal.species)})` : '';
+                const safeName = escapeHtml(app.applicantName || 'Anonymous');
+                const safePhone = escapeHtml(app.applicantPhone || 'N/A');
+                const safeEmail = escapeHtml(app.applicantEmail || '');
+                const safeAddress = escapeHtml(app.applicantAddress || 'N/A');
+                const safeReason = escapeHtml(app.reason || 'No specific motivation details provided.');
+                const safeReviewNote = escapeHtml(app.reviewNote || '');
+                const isAdoption = (app.type || 'adoption') === 'adoption';
+                const typeClass = isAdoption ? 'badge-type-adoption' : 'badge-type-foster';
+                const typeLabel = isAdoption ? 'Adoption' : 'Foster';
+
+                let statusBadgeClass = 'badge-pending';
+                let statusLabel = 'Pending Review';
+                if (app.status === 'approved') {
+                    statusBadgeClass = 'badge-healthy';
+                    statusLabel = 'Approved';
+                } else if (app.status === 'rejected') {
+                    statusBadgeClass = 'badge-critical';
+                    statusLabel = 'Rejected';
                 }
 
-                tbody.innerHTML = allApplications.map(app => {
-                    const petName = app.animal?.name || app.animalName || 'Rescue Animal';
-                    const petSpecies = app.animal?.species ? `(${app.animal.species})` : '';
-                    const contact = `Phone: ${app.applicantPhone || 'N/A'}${app.applicantEmail ? `<br><small>${app.applicantEmail}</small>` : ''}<br><small>Address: ${app.applicantAddress || 'N/A'}</small>`;
+                return `
+                    <div class="admin-card status-${app.status}">
+                        <!-- Header -->
+                        <div class="admin-card-header">
+                            <div class="admin-card-title-group">
+                                <span class="admin-card-name">${safeName}</span>
+                                <span class="admin-card-badge ${typeClass}">${typeLabel}</span>
+                                <span style="font-size:13.5px; color:#475569;">for <strong>${petName}</strong> <small style="color:#64748b;">${petSpecies}</small></span>
+                            </div>
+                            <div style="display:flex; align-items:center; gap:10px;">
+                                <span class="badge ${statusBadgeClass}">${statusLabel}</span>
+                                <span class="admin-card-date">${formatReportDate(app.createdAt)}</span>
+                            </div>
+                        </div>
 
-                    return `
-                        <tr>
-                            <td><strong>${escapeHtml(app.applicantName || 'Anonymous')}</strong></td>
-                            <td>${contact}</td>
-                            <td><strong>${escapeHtml(petName)}</strong> <small>${escapeHtml(petSpecies)}</small></td>
-                            <td><span class="badge badge-available">${escapeHtml(app.type || 'adoption')}</span></td>
-                            <td style="max-width:180px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${escapeHtml(app.reason || '')}">
-                                ${escapeHtml(app.reason || 'None specified')}
-                            </td>
-                            <td>${new Date(app.createdAt).toLocaleDateString()}</td>
-                            <td>
-                                <span class="badge ${app.status === 'pending' ? 'badge-pending' : app.status === 'approved' ? 'badge-available' : 'badge-critical'}">
-                                    ${app.status}
-                                </span>
-                                ${app.reviewerName ? `<br><small style="color:#777;">By: ${escapeHtml(app.reviewerName)}</small>` : ''}
-                            </td>
-                            <td>
+                        <!-- Contact Strip -->
+                        <div class="admin-contact-strip">
+                            <div class="admin-contact-col">
+                                <span class="label">Phone</span>
+                                <span class="val"><a href="tel:${safePhone}">${safePhone}</a></span>
+                            </div>
+                            <div class="admin-contact-col">
+                                <span class="label">Email</span>
+                                <span class="val">${safeEmail ? `<a href="mailto:${safeEmail}">${safeEmail}</a>` : 'Not provided'}</span>
+                            </div>
+                            <div class="admin-contact-col">
+                                <span class="label">Address</span>
+                                <span class="val">${safeAddress}</span>
+                            </div>
+                        </div>
+
+                        <!-- Applicant Environment Meta -->
+                        <div class="admin-meta-tags">
+                            <span class="admin-meta-tag">Residence: <strong>${escapeHtml(app.homeType || 'House')}</strong></span>
+                            <span class="admin-meta-tag">Other Pets: <strong>${app.hasOtherPets ? 'Yes' : 'None'}</strong></span>
+                            ${app.experience ? `<span class="admin-meta-tag">Prior Pet Care: <strong>${escapeHtml(app.experience)}</strong></span>` : ''}
+                        </div>
+
+                        <!-- Motivation Box -->
+                        <div class="admin-reason-box">
+                            <div class="admin-reason-label">Motivation & Care Commitment:</div>
+                            <div>${safeReason}</div>
+                        </div>
+
+                        <!-- Reviewer note if present -->
+                        ${app.status !== 'pending' ? `
+                            <div style="font-size:12.5px; color:#475569; background:#f1f5f9; border-radius:8px; padding:10px 14px;">
+                                <strong>Decision Note:</strong> ${safeReviewNote || '<em>No specific reviewer remarks recorded.</em>'}
+                                ${app.reviewerName ? `<span style="margin-left:8px; color:#64748b;">(By: <strong>${escapeHtml(app.reviewerName)}</strong>)</span>` : ''}
+                            </div>
+                        ` : ''}
+
+                        <!-- Actions Strip -->
+                        <div class="admin-card-actions">
+                            <div>
                                 ${app.status === 'pending' ? `
-                                    <button class="btn btn-primary" style="padding:6px 14px; font-size:13px;"
-                                            onclick="openReview('${app._id}')">
-                                        Review
+                                    <button class="btn btn-primary" style="padding:7px 16px; font-size:13px;" onclick="openReview('${app._id}')">
+                                        Review & Decide
                                     </button>
                                 ` : `
-                                    <span style="color:#777; font-size:13px; font-weight:600;">
-                                        ${app.status === 'approved' ? 'Approved' : 'Rejected'}
-                                    </span>
+                                    <button class="btn btn-secondary" style="padding:6px 14px; font-size:12.5px;" onclick="openReview('${app._id}')">
+                                        Update Decision
+                                    </button>
                                 `}
-                            </td>
-                        </tr>
-                    `;
-                }).join('');
-            } catch (err) {
-                tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding:25px; color:red;">Failed to load applications.</td></tr>';
-            }
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
         }
 
         let currentReportStatusFilter = 'all';
