@@ -104,4 +104,21 @@ router.put('/:id', isLoggedIn, isVolunteer, async (req, res) => {
     }
 });
 
+// DELETE report (admin only)
+router.delete('/:id', isLoggedIn, async (req, res) => {
+    try {
+        if (req.session.userRole !== 'admin') {
+            return res.status(403).json({ message: 'Admin access required to delete reports' });
+        }
+        if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+            return res.status(400).json({ message: 'Invalid report ID format' });
+        }
+        const deleted = await Report.findByIdAndDelete(req.params.id);
+        if (!deleted) return res.status(404).json({ message: 'Report not found' });
+        res.json({ message: 'Report deleted successfully' });
+    } catch (err) {
+        res.status(500).json({ message: 'Server error', error: err.message });
+    }
+});
+
 module.exports = router;

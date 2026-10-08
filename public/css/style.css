@@ -1530,3 +1530,559 @@ tr:last-child td {
 .home-pet-card .card-body .btn {
     margin-top: auto !important;
 }
+
+/* ============================================================
+   SPACIOUS & DETAILED STRAY INCIDENT REPORT CARDS
+   ============================================================ */
+.reports-section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.reports-count-pill {
+    background: #e2e8f0;
+    color: #334155;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 20px;
+}
+
+.reports-toolbar {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 14px 18px;
+    margin-bottom: 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 14px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.reports-search-box {
+    position: relative;
+    flex: 1;
+    min-width: 240px;
+}
+
+.reports-search-box input {
+    width: 100%;
+    padding: 9px 14px 9px 36px;
+    border: 1.5px solid #cbd5e1;
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: inherit;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.reports-search-box input:focus {
+    outline: none;
+    border-color: #2c7a4b;
+    box-shadow: 0 0 0 3px rgba(44, 122, 75, 0.15);
+}
+
+.reports-search-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #94a3b8;
+    pointer-events: none;
+    font-size: 14px;
+}
+
+.reports-filters-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.reports-filter-select {
+    padding: 8px 12px;
+    border: 1.5px solid #cbd5e1;
+    border-radius: 8px;
+    font-size: 13.5px;
+    background: #ffffff;
+    color: #334155;
+    font-family: inherit;
+    cursor: pointer;
+}
+
+.reports-filter-select:focus {
+    outline: none;
+    border-color: #2c7a4b;
+}
+
+.report-filter-btn {
+    padding: 7px 14px;
+    border-radius: 8px;
+    border: 1px solid #cbd5e1;
+    background: #f8fafc;
+    color: #475569;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.report-filter-btn:hover {
+    background: #e2e8f0;
+}
+
+.report-filter-btn.active {
+    background: #2c7a4b;
+    color: #ffffff;
+    border-color: #2c7a4b;
+}
+
+/* Card Container */
+.reports-feed {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+
+.report-card {
+    background: #ffffff;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 20px;
+    overflow: hidden;
+    display: grid;
+    grid-template-columns: 360px 1fr;
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.07);
+    transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+}
+
+.report-card:hover {
+    transform: translateY(-3px);
+    border-color: #cbd5e1;
+    box-shadow: 0 14px 36px rgba(0, 0, 0, 0.11);
+}
+
+.report-card.status-pending {
+    border-left: 6px solid #f59e0b;
+}
+
+.report-card.status-reviewed {
+    border-left: 6px solid #0284c7;
+}
+
+.report-card.status-resolved {
+    border-left: 6px solid #16a34a;
+}
+
+/* Media Showcase */
+.report-media {
+    position: relative;
+    background: #0f172a;
+    min-height: 340px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.report-media-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.4s ease;
+}
+
+.report-card:hover .report-media-img {
+    transform: scale(1.07);
+}
+
+.report-media-badge {
+    position: absolute;
+    top: 14px;
+    left: 14px;
+    background: rgba(15, 23, 42, 0.88);
+    backdrop-filter: blur(8px);
+    color: #ffffff;
+    font-size: 11.5px;
+    font-weight: 700;
+    padding: 5px 12px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.report-media-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(to top, rgba(15, 23, 42, 0.88) 0%, transparent 100%);
+    backdrop-filter: blur(2px);
+    color: #ffffff;
+    padding: 24px 16px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 6px;
+    opacity: 0;
+    transition: opacity 0.25s ease;
+    pointer-events: none;
+}
+
+.report-card:hover .report-media-overlay {
+    opacity: 1;
+}
+
+.report-no-photo {
+    width: 100%;
+    height: 100%;
+    min-height: 340px;
+    background: linear-gradient(145deg, #f0f9f4 0%, #e2eef9 50%, #eef2f7 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #94a3b8;
+    gap: 10px;
+    padding: 30px;
+    text-align: center;
+}
+
+.report-no-photo-icon {
+    font-size: 56px;
+    opacity: 0.65;
+    filter: grayscale(20%);
+}
+
+/* Card Body Details */
+.report-body {
+    padding: 28px 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    justify-content: space-between;
+}
+
+.report-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    border-bottom: 1.5px solid #f1f5f9;
+    padding-bottom: 14px;
+}
+
+.report-badges-cluster {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.report-status-pill {
+    font-size: 12.5px;
+    font-weight: 700;
+    padding: 5px 14px;
+    border-radius: 20px;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    letter-spacing: 0.2px;
+}
+
+.report-status-pending {
+    background: #fef3c7;
+    color: #b45309;
+    border: 1px solid #fde68a;
+}
+
+.report-status-reviewed {
+    background: #e0f2fe;
+    color: #0369a1;
+    border: 1px solid #bae6fd;
+}
+
+.report-status-resolved {
+    background: #dcfce7;
+    color: #15803d;
+    border: 1px solid #bbf7d0;
+}
+
+.report-species-pill {
+    background: #f1f5f9;
+    color: #475569;
+    border: 1px solid #e2e8f0;
+    font-size: 12.5px;
+    font-weight: 600;
+    padding: 5px 12px;
+    border-radius: 20px;
+    text-transform: capitalize;
+}
+
+.report-time-stamp {
+    font-size: 12.5px;
+    color: #64748b;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    white-space: nowrap;
+}
+
+.report-location-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.report-location-title {
+    font-size: 19px;
+    font-weight: 800;
+    color: #0f172a;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    line-height: 1.3;
+}
+
+.report-maps-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: #1d4ed8;
+    background: #eff6ff;
+    border: 1px solid #dbeafe;
+    padding: 6px 14px;
+    border-radius: 9px;
+    text-decoration: none;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+
+.report-maps-link:hover {
+    background: #dbeafe;
+    color: #1e40af;
+}
+
+.report-desc-box {
+    background: #f8fafc;
+    border-left: 4px solid #2c7a4b;
+    border-radius: 0 12px 12px 0;
+    padding: 16px 20px;
+    color: #334155;
+    font-size: 14.5px;
+    line-height: 1.7;
+    word-break: break-word;
+}
+
+.report-desc-label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #64748b;
+    letter-spacing: 0.6px;
+    margin-bottom: 6px;
+}
+
+/* Contact Grid */
+.report-contact-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    gap: 14px;
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 16px 20px;
+    font-size: 13px;
+}
+
+.report-contact-item {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.report-contact-item .label {
+    font-size: 10.5px;
+    color: #78716c;
+    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+}
+
+.report-contact-item .val {
+    font-weight: 600;
+    color: #1c1917;
+    font-size: 13.5px;
+}
+
+.report-phone-link {
+    color: #2c7a4b;
+    text-decoration: none;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.report-phone-link:hover {
+    text-decoration: underline;
+}
+
+/* Dispatch / Reviewer Note Box */
+.report-dispatch-box {
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    border-radius: 12px;
+    padding: 14px 18px;
+    font-size: 13.5px;
+    color: #166534;
+}
+
+.report-dispatch-box.is-reviewed {
+    background: #f0f9ff;
+    border-color: #bae6fd;
+    color: #075985;
+}
+
+.report-dispatch-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 700;
+    margin-bottom: 6px;
+    font-size: 12.5px;
+}
+
+/* Action Strip */
+.report-actions-strip {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+    border-top: 1.5px solid #f1f5f9;
+    padding-top: 16px;
+    margin-top: 2px;
+}
+
+.report-actions-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+/* Lightbox Modal */
+.report-lightbox {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(15, 23, 42, 0.88);
+    backdrop-filter: blur(8px);
+    z-index: 2000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    animation: fadeInModal 0.2s ease-out;
+}
+
+.report-lightbox.open {
+    display: flex;
+}
+
+.report-lightbox-dialog {
+    position: relative;
+    max-width: 900px;
+    width: 100%;
+    max-height: 90vh;
+    background: #ffffff;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
+    display: flex;
+    flex-direction: column;
+}
+
+.report-lightbox-header {
+    padding: 14px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #e2e8f0;
+    background: #f8fafc;
+}
+
+.report-lightbox-body {
+    padding: 16px;
+    background: #0f172a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    max-height: calc(90vh - 120px);
+    overflow: auto;
+}
+
+.report-lightbox-body img {
+    max-width: 100%;
+    max-height: calc(90vh - 150px);
+    object-fit: contain;
+    border-radius: 8px;
+}
+
+.report-lightbox-close {
+    background: #e2e8f0;
+    border: none;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+}
+
+.report-lightbox-close:hover {
+    background: #cbd5e1;
+}
+
+/* Responsive adjustments for Report Cards */
+@media (max-width: 960px) {
+    .report-card {
+        grid-template-columns: 1fr;
+    }
+
+    .report-media {
+        min-height: 280px;
+        max-height: 320px;
+    }
+
+    .report-media-overlay {
+        opacity: 1;
+    }
+
+    .report-body {
+        padding: 22px 24px;
+    }
+}
